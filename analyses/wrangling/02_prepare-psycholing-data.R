@@ -1,4 +1,5 @@
-# read data containing individual estimates of psycholingustic features
+# read data containing individual estimates of psycholingustic features and
+# calculate mean and median estimates
 library(dplyr)
 library(here)
 library(magrittr)
@@ -25,7 +26,7 @@ d_image %<>%
     dplyr::distinct(.)
 
 # some words appeared in both data-collection waves. i'm separating those words
-# out into their own dataframe, to get a estimate
+# out into their own dataframe
 v_image_dupes <- d_image[duplicated(d_image$string), 'string'] %>%
     dplyr::pull(.,
                 string)
@@ -38,22 +39,8 @@ d_image %<>%
     dplyr::filter(.,
                   !string %in% v_image_dupes)
 
-# get mean and median for non-duplicates
-d_image$estimate_mean <- d_image %>%
-    dplyr::select(.,
-                  matches('^rater')) %>%
-    rowMeans(.,
-             na.rm = T)
-
-d_image$estimate_median <- d_image %>%
-    dplyr::select(.,
-                  matches('^rater')) %>%
-    apply(.,
-          MARGIN = 1,
-          FUN = median,
-          na.rm = T)
-
-# get mean and median for duplicates
+# concatenating raters' estimates for words appearing in both data-collection
+# waves
 d_image_dupes %<>%
     dplyr::group_by(.,
                     string) %>%
@@ -61,33 +48,56 @@ d_image_dupes %<>%
 
 d_image_dupes$data <- d_image_dupes$data %>%
     purrr::map(.,
-               .f = ~as.matrix(as.data.frame(.x)))
+               .f = ~matrix(unlist(as.data.frame(.x)),
+                            nrow = 1))
 
-d_image_dupes$estimate_mean <- d_image_dupes$data %>%
-    purrr::map_dbl(.,
-                   .f = mean,
-                   na.rm = T)
+n_raters <- purrr::map_int(d_image_dupes$data,
+                          ncol) %>%
+    max(.)
 
-d_image_dupes$estimate_median <- d_image_dupes$data %>%
-    purrr::map_dbl(.,
-                   .f = median,
-                   na.rm = T)
+d_image_dupes$data <- d_image_dupes$data %>%
+    purrr::map(.,
+               ~magrittr::set_colnames(.x,
+                                       paste0('rater_',
+                                              1:n_raters)))
+
+d_image_dupes <- d_image_dupes$data %>%
+    purrr::map(.,
+               dplyr::as_tibble) %>%
+    purrr::reduce(.,
+                  dplyr::bind_rows) %>%
+    dplyr::bind_cols(d_image_dupes,
+                     .) %>%
+    dplyr::select(.,
+                  -data) %>%
+    dplyr::ungroup(.)
 
 d_image_dupes %<>%
     dplyr::select(.,
                   -data) %>%
     dplyr::ungroup(.)
 
-# combine estimates
-d_image %<>%
-    dplyr::select(.,
-                  -matches('rater'))
+# combine ratings in the two dataframes
+d_image <- dplyr::bind_rows(d_image, d_image_dupes)
 
-d_image <- bind_rows(d_image,
-                     d_image_dupes)
+# get mean and median
+d_image$mean <- d_image %>%
+    dplyr::select(.,
+                  matches('rater')) %>%
+    rowMeans(.,
+             na.rm = T)
+
+d_image$median <- d_image %>%
+    dplyr::select(.,
+                  matches('rater')) %>%
+    apply(.,
+          MARGIN = 1,
+          median,
+          na.rm = T)
 
 rm(d_image_dupes,
-   v_image_dupes)
+   v_image_dupes,
+   n_raters)
 
 ##### subjective frequency #####
 d_subfreq <- readr::read_tsv(here::here('data',

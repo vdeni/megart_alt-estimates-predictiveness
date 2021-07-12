@@ -1,4 +1,4 @@
-# import reaction time data, select only word and relevant columns, merge into
+# import reaction time data, select only words and relevant columns, merge into
 # single dataframe
 library(dplyr)
 library(here)
