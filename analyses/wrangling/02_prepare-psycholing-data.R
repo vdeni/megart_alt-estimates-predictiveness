@@ -94,6 +94,15 @@ rm(d_image_dupes,
    v_image_dupes,
    n_raters)
 
+# filter out strings not present in reaction time data
+d_rt_words <- readr::read_csv(here::here('data',
+                                         'reaction-times',
+                                         'reaction-times_words.csv'))
+
+d_image <- d_image %>%
+    dplyr::filter(.,
+                  string %in% d_rt_words$string)
+
 ##### subjective frequency #####
 d_subfreq <- readr::read_tsv(here::here('data',
                                         'psycholinguistic-estimates',
@@ -180,3 +189,8 @@ d_subfreq$median <- d_subfreq %>%
 rm(d_subfreq_dupes,
    v_subfreq_dupes,
    n_raters)
+
+# filter out strings not present in reaction time data
+d_subfreq <- d_subfreq %>%
+    dplyr::filter(.,
+                  string %in% d_rt_words$string)
