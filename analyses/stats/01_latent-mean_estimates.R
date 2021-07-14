@@ -24,11 +24,11 @@ d_image_long <- d_image %>%
                         values_to = 'rating') %>%
     tidyr::drop_na(.)
 
-# loop over words, extract estimates
 # initialize tibble for storing estimates
 estimates <- tibble()
 
-for (i in 1:nrow(d_image[1:3, ])) {
+# loop over words, extract estimates
+for (i in 1:max(unique(d_image_long$string_id))) {
     .data <- dplyr::filter(d_image_long,
                            string_id == i)
 
@@ -52,8 +52,7 @@ for (i in 1:nrow(d_image[1:3, ])) {
                       ess_bulk,
                       ess_tail) %>%
         dplyr::filter(.,
-                      variable %in% c('mu',
-                                      'sigma')) %>%
+                      variable == 'mu') %>%
         tidyr::pivot_wider(.,
                            names_from = 'variable',
                            names_glue = '{variable}_{.value}',
