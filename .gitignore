@@ -39,3 +39,5 @@ vignettes/*.pdf
 .Renviron
 
 analyses/data/
+
+analyses/stats/02_latent-mean_model
