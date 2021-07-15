@@ -37,9 +37,10 @@ for (i in 1:max(unique(d_image_long$string_id))) {
                                                      'Y' = .data$rating,
                                                      'c_1' = 1.5,
                                                      'c_4' = 4.5),
-                                         chains = 6,
+                                         chains = 9,
+                                         parallel_chains = 9,
                                          iter_warmup = 3e3,
-                                         iter_sampling = 6e3)
+                                         iter_sampling = 4e3)
 
     .out <- .m_probit_samples$summary() %>%
         dplyr::select(.,
