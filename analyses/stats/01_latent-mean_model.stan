@@ -3,10 +3,10 @@ data {
 
   int<lower=0> N; // number of data points
 
-  int<lower=1, upper=K> Y[N]; // data vector, i.e. psycholinguistic ratings
+ int<lower=1, upper=K> Y[N]; // data vector, i.e. psycholinguistic ratings
 
-  real<lower=1, upper=5> c_1;
-  real<lower=1, upper=5> c_4;
+ real<lower=1, upper=5> c_1;
+ real<lower=1, upper=5> c_4;
 }
 parameters {
   real mu; // latent normal mean
@@ -52,5 +52,27 @@ model {
 
     // likelihood
     Y[n] ~ categorical(theta);
+  }
+}
+generated quantities {
+  // simulate data for posterior predictive checks
+  array[N] int Y_rep;
+
+  // recreate theta vector
+  vector[K] theta;
+
+  for (n in 1:N) {
+    theta[1] = fmax(Phi((c[1] - mu) / sigma),
+                    0);
+
+    for (k in 2:(K - 1)) {
+      theta[k] = fmax(Phi((c[k] - mu) / sigma) - Phi((c[k - 1] - mu) / sigma),
+                      0);
+    }
+
+    theta[K] = fmax(1 - Phi((c[K - 1] - mu) / sigma),
+                    0);
+
+    Y_rep[n] = categorical_rng(theta);
   }
 }

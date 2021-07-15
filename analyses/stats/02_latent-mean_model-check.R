@@ -1,0 +1,69 @@
+library(here)
+library(cmdstanr)
+library(tidyr)
+library(bayesplot)
+library(stringr)
+
+# load dataframes with estimates
+source(here::here('wrangling',
+                  '02_prepare-psycholing-data.R'))
+
+# compile model
+m_probit <- cmdstanr::cmdstan_model(here::here('stats',
+                                               '01_latent-mean_model.stan'))
+
+##### imageability #####
+# add string id
+d_image %<>%
+    dplyr::mutate(.,
+                  string_id = 1:nrow(.))
+
+# transform data to long for analysis
+d_image_long <- d_image %>%
+    tidyr::pivot_longer(.,
+                        cols = matches('rater'),
+                        names_to = 'rater',
+                        values_to = 'rating') %>%
+    tidyr::drop_na(.)
+
+# subset words
+set.seed(1)
+
+v_subset <- sample(1:max(unique(d_image_long$string_id)),
+                   size = 5,
+                   replace = F)
+
+# fit model to chosen words
+.data <- dplyr::filter(d_image_long,
+                       string_id == v_subset[1])
+
+# 1
+.m_probit_samples <- m_probit$sample(data = list('K' = 5,
+                                                 'N' = length(.data$rating),
+                                                 'Y' = .data$rating,
+                                                 'c_1' = 1.5,
+                                                 'c_4' = 4.5),
+                                     chains = 9,
+                                     parallel_chains = 9,
+                                     iter_warmup = 3e3,
+                                     iter_sampling = 4e3,
+                                     adapt_delta = .90)
+
+.draws <- .m_probit_samples$draws()
+
+d_yrep <- .draws[, , stringr::str_subset(dimnames(.draws)$variable,
+                                         'Y_rep')] %>%
+    dplyr::as_tibble(.) %>%
+    janitor::clean_names(.)
+
+colnames(d_yrep) %<>%
+    stringr::str_replace(.,
+                         '^x',
+                         'chain')
+
+d_yrep %<>%
+    tidyr::pivot_longer(.,
+                        cols = everything(),
+                        names_pattern = 'chain(\\d)_y_rep_(\\d+)',
+                        names_to = c('chain', 'yrep'),
+                        values_to = 'rating')

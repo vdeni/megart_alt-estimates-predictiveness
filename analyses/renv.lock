@@ -48,6 +48,13 @@
       "Repository": "CRAN",
       "Hash": "e031418365a7f7a766181ab5a41a5716"
     },
+    "Rcpp": {
+      "Package": "Rcpp",
+      "Version": "1.0.7",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "dab19adae4440ae55aa8a9d238b246bb"
+    },
     "abind": {
       "Package": "abind",
       "Version": "1.4-5",
@@ -61,6 +68,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "644043219fc24e190c2f620c1a380a69"
+    },
+    "bayesplot": {
+      "Package": "bayesplot",
+      "Version": "1.8.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "0a8b771b1b255fc55f271ae49e671afc"
     },
     "checkmate": {
       "Package": "checkmate",
@@ -87,9 +101,9 @@
       "Package": "cmdstanr",
       "Version": "0.4.0",
       "Source": "Repository",
-      "Repository": "STAN",
+      "RemoteType": "repository",
       "Remotes": "stan-dev/posterior",
-      "Hash": "039037e8fb6be7a0312ebd1204370000"
+      "Hash": "adcd48103fe85603e758985ce45c483a"
     },
     "colorspace": {
       "Package": "colorspace",
@@ -174,6 +188,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "d7566c471c7b17e095dd023b9ef155ad"
+    },
+    "ggridges": {
+      "Package": "ggridges",
+      "Version": "0.5.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "9d028e8f37c84dba356ce3c367a1978e"
     },
     "glue": {
       "Package": "glue",
@@ -287,6 +308,13 @@
       "Repository": "CRAN",
       "Hash": "01f28d4278f15c76cddbea05899c5d6f"
     },
+    "plyr": {
+      "Package": "plyr",
+      "Version": "1.8.6",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "ec0e5ab4e5f851f6ef32cd1d1984957f"
+    },
     "posterior": {
       "Package": "posterior",
       "Version": "1.0.0",
@@ -334,6 +362,13 @@
       "Repository": "CRAN",
       "Hash": "079cb1f03ff972b30401ed05623cbe92"
     },
+    "reshape2": {
+      "Package": "reshape2",
+      "Version": "1.4.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "bb5996d0bd962d214a11140d77589917"
+    },
     "rlang": {
       "Package": "rlang",
       "Version": "0.4.11",
@@ -354,6 +389,20 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "6f76f71042411426ec8df6c54f34e6dd"
+    },
+    "stringi": {
+      "Package": "stringi",
+      "Version": "1.7.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "45c84ccfd359febce4c7545fee3d36cb"
+    },
+    "stringr": {
+      "Package": "stringr",
+      "Version": "1.4.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "0759e6b6c0957edb1311028a49a35e76"
     },
     "tensorA": {
       "Package": "tensorA",
