@@ -40,4 +40,4 @@ vignettes/*.pdf
 
 analyses/data/
 
-analyses/stats/02_latent-mean_model
+analyses/stats/01_latent-mean_model
