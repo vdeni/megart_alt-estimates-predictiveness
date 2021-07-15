@@ -3,6 +3,7 @@ library(cmdstanr)
 library(tidyr)
 library(bayesplot)
 library(stringr)
+library(ggplot2)
 
 # load dataframes with estimates
 source(here::here('wrangling',
@@ -37,7 +38,6 @@ v_subset <- sample(1:max(unique(d_image_long$string_id)),
 .data <- dplyr::filter(d_image_long,
                        string_id == v_subset[1])
 
-# 1
 .m_probit_samples <- m_probit$sample(data = list('K' = 5,
                                                  'N' = length(.data$rating),
                                                  'Y' = .data$rating,
@@ -49,6 +49,7 @@ v_subset <- sample(1:max(unique(d_image_long$string_id)),
                                      iter_sampling = 4e3,
                                      adapt_delta = .90)
 
+# wrangling draws from model output
 .draws <- .m_probit_samples$draws()
 
 d_yrep <- .draws[, , stringr::str_subset(dimnames(.draws)$variable,
@@ -62,8 +63,28 @@ colnames(d_yrep) %<>%
                          'chain')
 
 d_yrep %<>%
+    dplyr::mutate(.,
+                  .iteration = 1:nrow(.)) %>%
     tidyr::pivot_longer(.,
-                        cols = everything(),
+                        cols = matches('chain'),
                         names_pattern = 'chain(\\d)_y_rep_(\\d+)',
                         names_to = c('chain', 'yrep'),
                         values_to = 'rating')
+
+# plot posterior predictions
+ggplot(.data,
+       mapping = aes(x = rating)) +
+    geom_bar() +
+    geom_point(inherit.aes = F,
+              data = dplyr::filter(d_yrep,
+                                   .iteration %in%
+                                       sample(1:max(unique(d_yrep$.iteration)),
+                                              replace = F,
+                                              size = 150)),
+              mapping = aes(x = rating,
+                            group = interaction(.iteration, chain)),
+              stat = 'count',
+              size = 3.00,
+              alpha = .10,
+              position = position_jitter(width = .20,
+                                         height = 0))
