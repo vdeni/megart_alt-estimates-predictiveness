@@ -83,3 +83,14 @@ for (i in 1:max(unique(d_subfreq_long$string_id))) {
     estimates <- bind_rows(estimates,
                            .out)
 }
+
+estimates <- dplyr::select(d_subfreq,
+                           string,
+                           string_id) %>%
+    dplyr::left_join(estimates,
+                     .,
+                     by = 'string_id')
+
+readr::write_csv(estimates,
+                 here::here('stats',
+                            '02_latent-mean_estimates_subfreq.csv'))
