@@ -1,15 +1,10 @@
 library(here)
 library(cmdstanr)
 library(tidyr)
-library(bayesplot)
 
 # load dataframes with estimates
 source(here::here('wrangling',
                   '02_prepare-psycholing-data.R'))
-
-# compile model
-m_probit <- cmdstanr::cmdstan_model(here::here('stats',
-                                               '02_latent-mean_model.stan'))
 
 ##### imageability #####
 # add string id
@@ -25,22 +20,32 @@ d_image_long <- d_image %>%
                         values_to = 'rating') %>%
     tidyr::drop_na(.)
 
-# conduct model checking for subset of words
-set.seed(1)
-
-v_subset <- sample(1:max(unique(d_image_long$string_id)),
-                   size = 10,
-                   replace = F)
-
-d_model_checking <- d_image_long %>%
-    dplyr::filter(.,
-                  string_id %in% v_subset)
-
 # initialize tibble for storing estimates
 estimates <- tibble()
 
 # loop over words, extract estimates
 for (i in 1:max(unique(d_image_long$string_id))) {
+
+    print(paste(paste0(rep('#', 30),
+                       collapse = ''),
+                i,
+                paste0(rep('#', 30),
+                       collapse = ''),
+                collapse = ' '))
+
+    if (i == 1) {
+        # compile model and recompile every 10 iterations
+        m_probit <-
+            cmdstanr::cmdstan_model(here::here('stats',
+                                               '03_latent-mean_model.stan'))
+    }
+    else if (i %% 10 == 0) {
+        m_probit <-
+            cmdstanr::cmdstan_model(here::here('stats',
+                                               '03_latent-mean_model.stan'),
+                                    force_recompile = T)
+    }
+
     .data <- dplyr::filter(d_image_long,
                            string_id == i)
 

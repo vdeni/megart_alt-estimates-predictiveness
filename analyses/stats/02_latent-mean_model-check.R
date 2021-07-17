@@ -11,7 +11,7 @@ source(here::here('wrangling',
 
 # compile model
 m_probit <- cmdstanr::cmdstan_model(here::here('stats',
-                                               '01_latent-mean_model.stan'))
+                                               '01_latent-mean_model-check.stan'))
 
 ##### imageability #####
 # add string id
@@ -36,7 +36,7 @@ v_subset <- sample(1:max(unique(d_image_long$string_id)),
 
 # fit model to chosen words
 .data <- dplyr::filter(d_image_long,
-                       string_id == v_subset[1])
+                       string_id == v_subset[5])
 
 .m_probit_samples <- m_probit$sample(data = list('K' = 5,
                                                  'N' = length(.data$rating),
