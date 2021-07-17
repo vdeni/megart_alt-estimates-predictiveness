@@ -6,14 +6,13 @@ library(tidyr)
 source(here::here('wrangling',
                   '02_prepare-psycholing-data.R'))
 
-##### imageability #####
 # add string id
-d_image %<>%
+d_subfreq %<>%
     dplyr::mutate(.,
                   string_id = 1:nrow(.))
 
 # transform data to long for analysis
-d_image_long <- d_image %>%
+d_subfreq_long <- d_subfreq %>%
     tidyr::pivot_longer(.,
                         cols = matches('rater'),
                         names_to = 'rater',
@@ -24,7 +23,7 @@ d_image_long <- d_image %>%
 estimates <- tibble()
 
 # loop over words, extract estimates
-for (i in 1:max(unique(d_image_long$string_id))) {
+for (i in 1:max(unique(d_subfreq_long$string_id))) {
 
     print(paste(paste0(rep('#', 30),
                        collapse = ''),
@@ -37,16 +36,16 @@ for (i in 1:max(unique(d_image_long$string_id))) {
         # compile model and recompile every 10 iterations
         m_probit <-
             cmdstanr::cmdstan_model(here::here('stats',
-                                               '03_latent-mean_model.stan'))
+                                               '02_latent-mean_model.stan'))
     }
     else if (i %% 10 == 0) {
         m_probit <-
             cmdstanr::cmdstan_model(here::here('stats',
-                                               '03_latent-mean_model.stan'),
+                                               '02_latent-mean_model.stan'),
                                     force_recompile = T)
     }
 
-    .data <- dplyr::filter(d_image_long,
+    .data <- dplyr::filter(d_subfreq_long,
                            string_id == i)
 
     .m_probit_samples <- m_probit$sample(data = list('K' = 5,
