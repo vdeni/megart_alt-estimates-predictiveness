@@ -13,7 +13,8 @@ d_rt_1 <- readr::read_csv(here::here('data',
                   id,
                   string,
                   string_type,
-                  stimulus_rt) %>%
+                  stimulus_rt,
+                  stimulus_acc) %>%
     dplyr::filter(.,
                   string_type == 'word') %>%
     dplyr::select(.,
@@ -26,7 +27,8 @@ d_rt_2 <- readr::read_csv(here::here('data',
                   id,
                   string,
                   string_type,
-                  stimulus_rt) %>%
+                  stimulus_rt,
+                  stimulus_acc) %>%
     dplyr::filter(.,
                   string_type == 'word') %>%
     dplyr::select(.,

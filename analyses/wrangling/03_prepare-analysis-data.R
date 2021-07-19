@@ -66,6 +66,11 @@ d %<>%
     tidyr::drop_na(.,
                    matches('image|subfreq'))
 
+# choose only correct responses
+d %<>%
+    dplyr::filter(.,
+                  stimulus_acc == T)
+
 # remove unnecessary objects
 rm(d_image,
    d_latent_image,
@@ -73,10 +78,3 @@ rm(d_image,
    d_latent_subfreq,
    d_rt,
    d_rt_words)
-
-# unload packages
-lapply(paste0('package:',
-              names(sessionInfo()$otherPkgs)),
-      detach,
-      unload = T,
-      character.only = T)
