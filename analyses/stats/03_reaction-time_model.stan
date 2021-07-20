@@ -4,10 +4,10 @@ data {
                       reaction times */
 
   int<lower=1> N_subs; // number of participants in dataset
-  array[N_subs] int<lower=1> subs; // array indexing participants
+  array[N_obs] int<lower=1> subs; // array indexing participants
 
   int<lower=1> N_words; // number of words in dataset
-  array[N_words] int<lower=1> words; // array indexing words
+  array[N_obs] int<lower=1> words; // array indexing words
 
   // criterion
   vector<lower=0>[N_obs] rt; // reaction times vector
