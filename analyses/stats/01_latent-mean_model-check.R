@@ -72,22 +72,22 @@ d_yrep %<>%
                         values_to = 'rating')
 
 # plot posterior predictions
-ggplot(.data,
-       mapping = aes(x = rating)) +
-    geom_bar() +
-    geom_point(inherit.aes = F,
-              data = dplyr::filter(d_yrep,
-                                   .iteration %in%
-                                       sample(1:max(unique(d_yrep$.iteration)),
-                                              replace = F,
-                                              size = 150)),
-              mapping = aes(x = rating,
-                            group = interaction(.iteration, chain)),
-              stat = 'count',
-              size = 3.00,
-              alpha = .10,
-              position = position_jitter(width = .20,
-                                         height = 0))
+ggplot2::ggplot(.data,
+                mapping = aes(x = rating)) +
+    ggplot2::geom_bar() +
+    ggplot2::geom_point(inherit.aes = F,
+                        data = dplyr::filter(d_yrep,
+                                             .iteration %in%
+                                             sample(1:max(unique(d_yrep$.iteration)),
+                                                        replace = F,
+                                                        size = 150)),
+                        mapping = aes(x = rating,
+                                      group = interaction(.iteration, chain)),
+                        stat = 'count',
+                        size = 3.00,
+                        alpha = .10,
+                        position = ggplot2::position_jitter(width = .20,
+                                                            height = 0))
 
 ##### subjective frequency #####
 # add string id
@@ -148,19 +148,19 @@ d_yrep %<>%
                         values_to = 'rating')
 
 # plot posterior predictions
-ggplot(.data,
-       mapping = aes(x = rating)) +
-    geom_bar() +
-    geom_point(inherit.aes = F,
-              data = dplyr::filter(d_yrep,
-                                   .iteration %in%
-                                       sample(1:max(unique(d_yrep$.iteration)),
-                                              replace = F,
-                                              size = 150)),
-              mapping = aes(x = rating,
-                            group = interaction(.iteration, chain)),
-              stat = 'count',
-              size = 3.00,
-              alpha = .10,
-              position = position_jitter(width = .20,
-                                         height = 0))
+ggplot2::ggplot(.data,
+                mapping = aes(x = rating)) +
+    ggplot2::geom_bar() +
+    ggplot2::geom_point(inherit.aes = F,
+                        data = dplyr::filter(d_yrep,
+                                             .iteration %in%
+                                             sample(1:max(unique(d_yrep$.iteration)),
+                                                        replace = F,
+                                                        size = 150)),
+                        mapping = aes(x = rating,
+                                      group = interaction(.iteration, chain)),
+                        stat = 'count',
+                        size = 3.00,
+                        alpha = .10,
+                        position = ggplot2::position_jitter(width = .20,
+                                                            height = 0))

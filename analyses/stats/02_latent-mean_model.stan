@@ -9,7 +9,7 @@ data {
  real<lower=1, upper=5> c_4;
 }
 parameters {
-  real mu; // latent normal mean
+  real mi; // latent normal mean
   real<lower=0> sigma; // latent normal standard deviation
 
   real<lower=1, upper=5> c_2;
@@ -28,7 +28,7 @@ model {
   vector[K] theta; // vector with probabilities of observing each rating
 
   // priors
-  mu ~ normal(2.5, .25);
+  mi ~ normal(2.5, .25);
   sigma ~ exponential(1);
 
   // add priors for other thresholds
@@ -37,17 +37,17 @@ model {
 
   for (n in 1:N) {
     // calculate probabilites of observing lowest rating, i.e. 1
-    theta[1] = fmax(Phi((c[1] - mu) / sigma),
+    theta[1] = fmax(Phi((c[1] - mi) / sigma),
                     0);
 
     // calculate probabilites for ratings [2, 4]
     for (k in 2:(K - 1)) {
-      theta[k] = fmax(Phi((c[k] - mu) / sigma) - Phi((c[k - 1] - mu) / sigma),
+      theta[k] = fmax(Phi((c[k] - mi) / sigma) - Phi((c[k - 1] - mi) / sigma),
                       0);
     }
 
     // calculate probability for highest rating, i.e. 5
-    theta[K] = fmax(1 - Phi((c[K - 1] - mu) / sigma),
+    theta[K] = fmax(1 - Phi((c[K - 1] - mi) / sigma),
                     0);
 
     // likelihood
