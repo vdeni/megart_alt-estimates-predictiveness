@@ -10,50 +10,11 @@ library(here)
 library(dplyr)
 library(tidyr)
 library(magrittr)
-library(ggplot2)
 library(cmdstanr)
-library(bayesplot)
 
 # compile stan model
 m_rt_model <- cmdstanr::cmdstan_model(here::here('stats',
                                                  '03_reaction-time_model.stan'))
-
-# add numeric ID variables for participants and words
-d %<>%
-    dplyr::group_by(.,
-                    id) %>%
-    tidyr::nest(.) %>%
-    tibble::add_column(.,
-                       id_numeric = 1:nrow(.),
-                       .after = 1) %>%
-    tidyr::unnest(.,
-                  cols = 'data') %>%
-    dplyr::ungroup(.)
-
-d %<>%
-    dplyr::group_by(.,
-                    string) %>%
-    tidyr::nest(.) %>%
-    tibble::add_column(.,
-                       string_id = 1:nrow(.),
-                       .after = 'string') %>%
-    tidyr::unnest(.,
-                  cols = 'data') %>%
-    dplyr::ungroup(.) %>%
-    dplyr::select(.,
-                  id,
-                  id_numeric,
-                  string,
-                  string_id,
-                  dplyr::everything())
-
-# grand mean-center predictors
-d %<>%
-    dplyr::mutate(.,
-                  dplyr::across(.cols = dplyr::matches('^(image|subfreq)'),
-                                .fns = ~c(scale(.x,
-                                                scale = F))))
-
 # prior predictive check
 m_mean <- m_rt_model$sample(data = list('N_obs' = nrow(.data),
                                         'N_subs' = length(unique(.data$id_numeric)),

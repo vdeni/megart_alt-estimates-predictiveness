@@ -43,3 +43,4 @@ analyses/data/
 analyses/stats/01_latent-mean_model-check
 analyses/stats/02_latent-mean_model
 analyses/stats/03_reaction-time_model
+analyses/stats/03_reaction-time_model_prior-pc
