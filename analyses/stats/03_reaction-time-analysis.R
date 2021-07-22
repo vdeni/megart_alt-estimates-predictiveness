@@ -12,25 +12,6 @@ library(tidyr)
 library(magrittr)
 library(cmdstanr)
 
-# compile stan model
-m_rt_model <- cmdstanr::cmdstan_model(here::here('stats',
-                                                 '03_reaction-time_model.stan'))
-# prior predictive check
-m_mean <- m_rt_model$sample(data = list('N_obs' = nrow(.data),
-                                        'N_subs' = length(unique(.data$id_numeric)),
-                                        'subs' = .data$id_numeric,
-                                        'N_words' = length(unique(.data$string_id)),
-                                        'words' = .data$string_id,
-                                        'rt' = .data$stimulus_rt,
-                                        'subfreq' = .data$subfreq_mean,
-                                        'image' = .data$image_mean),
-                             chains = 6,
-                             parallel_chains = 6,
-                             iter_warmup = 3e3,
-                             iter_sampling = 6e3,
-                             adapt_delta = .80,
-                             fixed_param = T)
-
 .data <- filter(d, string %in% head(unique(d$string), 100))
 
 # mean of ratings
