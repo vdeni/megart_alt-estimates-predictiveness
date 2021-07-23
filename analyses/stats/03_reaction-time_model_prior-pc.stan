@@ -21,32 +21,40 @@ generated quantities {
   array[N_obs] real<lower=0> rt_rep;
   vector[N_obs] mi;
 
-  real mi_A = normal_rng(6, .3);
+  real mi_A = normal_rng(6.5, .4);
   real<lower=0> sigma_A = exponential_rng(1);
   vector[N_subs] A_sub;
 
   for (n in 1:N_subs) {
-    A_sub[n] = normal_rng(mi_A, sigma_A);
+    A_sub[n] = normal_rng(0, .75);
   }
 
-  real B_subfreq = normal_rng(-3, .7);
-  real B_image = normal_rng(-2, .7);
+  real B_subfreq = normal_rng(-0.5, .7);
+  real B_image = normal_rng(-.25, .7);
 
   real mi_C = normal_rng(0, 3);
   real<lower=0> sigma_C = exponential_rng(1);
   vector[N_words] C_word;
 
   for (n in 1:N_words) {
-    C_word[n] = normal_rng(mi_C, sigma_C);
+    C_word[n] = normal_rng(0, .50);
+  }
+
+  vector[N_words] C;
+
+  for (n in 1:N_words) {
+    C[n] = mi_C +
+      C_word[n] +
+      B_subfreq * subfreq[words[n]] +
+      B_image * image[words[n]];
   }
 
   real<lower=0> sigma_rt = exponential_rng(2);
 
   for (n in 1:N_obs) {
-    mi[n] = A_sub[subs[n]] +
-      C_word[words[n]] +
-      B_subfreq * subfreq[n] +
-      B_image + image[n];
+    mi[n] = mi_A +
+      A_sub[subs[n]] +
+      C[words[n]];
   }
 
   rt_rep = lognormal_rng(mi, sigma_rt);

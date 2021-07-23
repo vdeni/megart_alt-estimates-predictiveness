@@ -12,15 +12,25 @@ library(tidyr)
 library(magrittr)
 library(cmdstanr)
 
-.data <- filter(d, string %in% head(unique(d$string), 100))
+# compile stan model
+m_rt_model <-
+    cmdstanr::cmdstan_model(here::here('stats',
+                                       '04_reaction-time_model.stan'))
+
+.data <- filter(d,
+                string_id %in% sample(unique(d$string_id), 50, replace = F)) %>%
+    group_by(string) %>%
+    nest() %>%
+    tibble::add_column(str_id = 1:nrow(.)) %>%
+    unnest('data')
 
 # mean of ratings
 .start <- Sys.time()
 m_mean <- m_rt_model$sample(data = list('N_obs' = nrow(.data),
                                         'N_subs' = length(unique(.data$id_numeric)),
                                         'subs' = .data$id_numeric,
-                                        'N_words' = length(unique(.data$string_id)),
-                                        'words' = .data$string_id,
+                                        'N_words' = length(unique(.data$str_id)),
+                                        'words' = .data$str_id,
                                         'rt' = .data$stimulus_rt,
                                         'subfreq' = .data$subfreq_mean,
                                         'image' = .data$image_mean),
@@ -30,3 +40,20 @@ m_mean <- m_rt_model$sample(data = list('N_obs' = nrow(.data),
                              iter_sampling = 6e3,
                              adapt_delta = .80)
 .end <- Sys.time()
+
+d_summary <- m_mean$summary()
+
+.draws <- m_mean$draws()
+
+d_draws <- .draws[, , ] %>%
+    dplyr::as_tibble(.) %>%
+    janitor::clean_names(.)
+
+# d_draws %>%
+#     dplyr::mutate(.,
+#                   .iteration = 1:nrow(.)) %>%
+#     tidyr::pivot_longer(.,
+#                         cols = matches('^x'),
+#                         names_pattern = '^x(\\d)_.*',
+#                         names_to = c('chain', 'yrep'),
+#                         values_to = 'rating')
