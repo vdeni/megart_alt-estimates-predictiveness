@@ -62,17 +62,17 @@ model {
 
   C_word ~ normal(0, .5);
 }
-// generated quantities {
-//   array[N_obs] real<lower=0> rt_rep;
-//   vector[N_obs] mi;
-// 
-//   for (n in 1:N_obs) {
-//     mi[n] = mi_A +
-//       A_sub[subs[n]] +
-//       C_word[words[n]] +
-//       B_subfreq * subfreq[n] +
-//       B_image + image[n];
-//   }
-// 
-//   rt_rep = lognormal_rng(mi, sigma_rt);
-// }
+generated quantities {
+  array[N_obs] real<lower=0> rt_rep;
+  vector[N_obs] mi;
+
+  for (n in 1:N_obs) {
+    mi[n] = mi_A +
+      A_sub[subs[n]] +
+      C_word[words[n]] +
+      B_subfreq * subfreq[n] +
+      B_image + image[n];
+  }
+
+  rt_rep = lognormal_rng(mi, sigma_rt);
+}

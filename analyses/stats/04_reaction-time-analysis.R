@@ -11,6 +11,7 @@ library(dplyr)
 library(tidyr)
 library(magrittr)
 library(cmdstanr)
+library(bayesplot)
 
 # compile stan model
 m_rt_model <-
@@ -49,11 +50,10 @@ d_draws <- .draws[, , ] %>%
     dplyr::as_tibble(.) %>%
     janitor::clean_names(.)
 
-# d_draws %>%
-#     dplyr::mutate(.,
-#                   .iteration = 1:nrow(.)) %>%
-#     tidyr::pivot_longer(.,
-#                         cols = matches('^x'),
-#                         names_pattern = '^x(\\d)_.*',
-#                         names_to = c('chain', 'yrep'),
-#                         values_to = 'rating')
+d_draws %>%
+    dplyr::mutate(.,
+                  .iteration = 1:nrow(.)) %>%
+    tidyr::pivot_longer(.,
+                        cols = matches('^x'),
+                        names_pattern = '^(x)(\\d)_.*',
+                        names_to = c('chain', '{.value}'))
