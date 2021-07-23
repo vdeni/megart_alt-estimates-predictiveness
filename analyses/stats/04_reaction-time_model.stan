@@ -46,15 +46,16 @@ model {
 
   // priors
   sigma_rt ~ exponential(2);
+
   A_sub ~ normal(mi_A, sigma_A);
-  mi_A ~ normal(0, 1);
+  mi_A ~ normal(6, .3);
   sigma_A ~ exponential(1);
 
-  B_subfreq ~ normal(0, .4);
-  B_image ~ normal(0, .2);
+  B_subfreq ~ normal(-3, .7);
+  B_image ~ normal(-2, .7);
 
   C_word ~ normal(mi_C, sigma_C);
-  mi_C ~ normal(0, 1);
+  mi_C ~ normal(0, 3);
   sigma_C ~ exponential(1);
 }
 generated quantities {
