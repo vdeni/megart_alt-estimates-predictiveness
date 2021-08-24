@@ -19,7 +19,7 @@ m_rt_model <-
                                        '04_reaction-time_model.stan'))
 
 .data <- filter(d,
-                string_id %in% sample(unique(d$string_id), 50, replace = F)) %>%
+                string_id %in% sample(unique(d$string_id), 25, replace = F)) %>%
     group_by(string) %>%
     nest() %>%
     tibble::add_column(str_id = 1:nrow(.)) %>%
@@ -35,12 +35,13 @@ m_mean <- m_rt_model$sample(data = list('N_obs' = nrow(.data),
                                         'rt' = .data$stimulus_rt,
                                         'subfreq' = .data$subfreq_mean,
                                         'image' = .data$image_mean),
-                             chains = 6,
-                             parallel_chains = 6,
+                             chains = 9,
+                             parallel_chains = 9,
                              iter_warmup = 3e3,
-                             iter_sampling = 6e3,
+                             iter_sampling = 4e3,
                              adapt_delta = .80)
 .end <- Sys.time()
+beepr::beep()
 
 d_summary <- m_mean$summary()
 
@@ -57,3 +58,5 @@ d_draws %>%
                         cols = matches('^x'),
                         names_pattern = '^(x)(\\d)_.*',
                         names_to = c('chain', '{.value}'))
+
+bayesplot::mcmc_rank_overlay(.draws, regex_pars = 'mi_A')
