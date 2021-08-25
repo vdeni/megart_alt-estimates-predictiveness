@@ -100,12 +100,21 @@ d %<>%
                   string_id,
                   dplyr::everything())
 
-# grand mean-center predictors
+# grand-mean center predictors
 d %<>%
     dplyr::mutate(.,
                   dplyr::across(.cols = dplyr::matches('^(image|subfreq)'),
                                 .fns = ~c(scale(.x,
                                                 scale = F))))
+
+# extract word-data into separate dataframe for word-level modeling
+d_words <- dplyr::select(d,
+                         string,
+                         string_id,
+                         dplyr::matches('image|subfreq'))
+
+d_words %<>%
+    dplyr::distinct(.)
 
 # remove unnecessary objects
 rm(d_image,
