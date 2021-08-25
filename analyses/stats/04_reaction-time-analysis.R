@@ -28,20 +28,19 @@ m_rt_model <-
 # mean of ratings
 .start <- Sys.time()
 m_mean <- m_rt_model$sample(data = list('N_obs' = nrow(.data),
-                                        'N_subs' = length(unique(.data$id_numeric)),
+                                        'N_subs' = max(.data$id_numeric),
                                         'subs' = .data$id_numeric,
-                                        'N_words' = length(unique(.data$str_id)),
+                                        'N_words' = max(.data$str_id),
                                         'words' = .data$str_id,
                                         'rt' = .data$stimulus_rt,
                                         'subfreq' = .data$subfreq_mean,
                                         'image' = .data$image_mean),
-                             chains = 9,
-                             parallel_chains = 9,
-                             iter_warmup = 3e3,
-                             iter_sampling = 4e3,
+                             chains = 2,
+                             parallel_chains = 2,
+                             iter_warmup = 1e3,
+                             iter_sampling = .5e3,
                              adapt_delta = .80)
 .end <- Sys.time()
-beepr::beep()
 
 d_summary <- m_mean$summary()
 
