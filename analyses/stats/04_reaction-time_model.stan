@@ -1,78 +1,92 @@
+/*
+The data is supplied from two different dataframes. One (RT data) contains
+individual reaction times to lexical decision stimuli provided by the
+participants. The second (word data) contains the subjective frequencies and
+imageability ratings for each of the words presented to the participants in the
+lexical decision task.
+ */
+
 data {
   // ID variables
-  int<lower=1> N_obs; /* number of observations in dataset, i.e. number of
-                      reaction times */
+  int<lower=1> N_OBS; // number of reaction times in RT data
 
-  int<lower=1> N_subs; // number of participants in dataset
-  array[N_obs] int<lower=1> subs; // array indexing participants
+  int<lower=1> N_SUBS; // number of participants in RT data
+  array[N_OBS] int<lower=1> SUBS; // array indexing participants in RT data
 
-  int<lower=1> N_words; // number of words in dataset
-  array[N_obs] int<lower=1> words; // array indexing words
+  int<lower=1> N_WORDS; // number of words in RT and word data
+  array[N_OBS] int<lower=1> WORDS; // array indexing words in RT data
 
   // criterion
-  vector<lower=0>[N_obs] rt; // reaction times vector
+  vector<lower=0>[N_OBS] RT; // reaction times in the RT data
 
   // predictors
-  vector[N_obs] subfreq; // words' estimated subjective frequencies
+  vector[N_OBS] SUBFREQ; // subjective frequency estimates in the word data
 
-  vector[N_obs] image; // words' estimated imageabilities
+  vector[N_OBS] IMAGE; // imageability estimates in the word data
 }
 parameters {
-  vector[N_subs] A_sub; // participant-specific parameters
-  real mi_A; // mean of participant-specific intercept distribution
-  real<lower=0> sigma_A; // standard deviation of p-s intercept distribution
+  vector[N_SUBS] A_SUBS; // participant-specific parameters
+  real mi_A; // mean of participant-specific parameter distribution
+  real<lower=0> sigma_A; // standard deviation of p-s parameter distribution
 
-  real<lower=0> sigma_rt; // standard deviation of reaction time distributions
+  vector[N_WORDS] B_0; // word-specific intercept
+  real<lower=0> sigma_B_0; // standard deviation of w-s intercept distribution
 
-  real B_subfreq; // coefficient for subjective frequency effect
-  real B_image; // coefficient for imageability effect
+  real B_SUBFREQ; // coefficient for subjective frequency effect
+  real B_IMAGE; // coefficient for imageability effect
 
-  vector[N_words] C_word; // word-specific parameters
-  real mi_C; // mean of word-specific intercept distribution
-  real<lower=0> sigma_C; // standard deviation of w-s intercept distribution
+  real<lower=0> sigma_RT; // standard deviation of reaction time distributions
+
+  vector[N_WORDS] B_WORDS; // per-word parameter TODO: better description
+  real<lower=0> sigma_B_WORDS; // per-word standard deviation
 }
 model {
-  vector[N_obs] mi; // location parameter of lognormal distro for each response
+  vector[N_OBS] mi_obs; // location parameter of lognormal distro for each response
+  vector[N_WORDS] mi_word; // location parameter for distro of word components
 
-  // likelihood
-  for (n in 1:N_obs) {
-    mi[n] = mi_A +
-      A_sub[subs[n]] +
-      mi_C +
-      C_word[words[n]] +
-      B_subfreq * subfreq[n] +
-      B_image * image[n];
+  for (word in 1:N_WORDS) {
+    mi_word[word] = B_0[word] +
+      B_SUBFREQ * SUBFREQ[word] +
+      B_IMAGE * IMAGE[word];
   }
 
-  rt ~ lognormal(mi, sigma_rt);
+  for (obs in 1:N_OBS) {
+    mi_obs[obs] = mi_A +
+      A_SUBS[SUBS[obs]] +
+      B_WORDS[WORDS[obs]];
+  }
+
+  // likelihood
+  RT ~ lognormal(mi_obs, sigma_RT);
 
   // priors
-  sigma_rt ~ exponential(2);
+  sigma_RT ~ exponential(2);
 
   mi_A ~ normal(6.5, .4);
   sigma_A ~ exponential(1);
 
-  A_sub ~ normal(0, .75);
+  A_SUBS ~ normal(0, .75);
 
-  B_subfreq ~ normal(-0.5, .7);
-  B_image ~ normal(-0.25, .7);
+  B_0 ~ normal(0, .5);
+  sigma_B_0 ~ exponential(1);
 
-  mi_C ~ normal(0, 3);
-  sigma_C ~ exponential(1);
+  B_SUBFREQ ~ normal(-0.5, .7);
+  B_IMAGE ~ normal(-0.25, .7);
 
-  C_word ~ normal(0, .5);
+  B_WORDS ~ normal(mi_word, sigma_B_WORDS);
+  sigma_B_WORDS ~ exponential(1);
 }
-generated quantities {
-  array[N_obs] real<lower=0> rt_rep;
-  vector[N_obs] mi;
-
-  for (n in 1:N_obs) {
-    mi[n] = mi_A +
-      A_sub[subs[n]] +
-      C_word[words[n]] +
-      B_subfreq * subfreq[n] +
-      B_image + image[n];
-  }
-
-  rt_rep = lognormal_rng(mi, sigma_rt);
-}
+// generated quantities {
+//   array[N_obs] real<lower=0> rt_rep;
+//   vector[N_obs] mi;
+// 
+//   for (n in 1:N_obs) {
+//     mi[n] = mi_A +
+//       A_sub[subs[n]] +
+//       C_word[words[n]] +
+//       B_subfreq * subfreq[n] +
+//       B_image + image[n];
+//   }
+// 
+//   rt_rep = lognormal_rng(mi, sigma_rt);
+// }
