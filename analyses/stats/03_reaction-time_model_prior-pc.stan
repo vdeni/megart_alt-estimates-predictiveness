@@ -28,40 +28,43 @@ generated quantities {
   array[N_OBS] real<lower=0> RT_rep;
   vector[N_OBS] mi_obs;
 
-  real mi_A = normal_rng(6.5, .4);
-  real<lower=0> sigma_A = exponential_rng(1);
+  real A_0 = normal_rng(6.5, .4);
 
-  vector[N_SUBS] A_SUBS;
+  real mi_B = normal_rng(0, .5);
+  real<lower=0> sigma_B = exponential_rng(1);
+
+  vector[N_SUBS] B_SUBS;
 
   for (sub in 1:N_SUBS) {
-    A_SUBS[sub] = normal_rng(mi_A, sigma_A);
+    B_SUBS[sub] = normal_rng(mi_B, sigma_B);
   }
 
-  vector[N_WORDS] B_0;
+  vector[N_WORDS] C_0;
 
   for (word in 1:N_WORDS) {
-    B_0[word] = normal_rng(0, .5);
+    C_0[word] = normal_rng(0, .5);
   }
 
-  real B_SUBFREQ = normal_rng(-0.5, .7);
-  real B_IMAGE = normal_rng(-.25, .7);
+  real C_SUBFREQ = normal_rng(-0.5, .7);
+  real C_IMAGE = normal_rng(-.25, .7);
 
-  vector[N_WORDS] B_WORDS;
-  real sigma_B_WORDS = exponential_rng(1);
+  vector[N_WORDS] C_WORDS;
+  real sigma_C_WORDS = exponential_rng(1);
 
   for (word in 1:N_WORDS) {
-    real mi_word = B_0[word] +
-      B_SUBFREQ * SUBFREQ[word] +
-      B_IMAGE * IMAGE[word];
+    real mi_word = C_0[word] +
+      C_SUBFREQ * SUBFREQ[word] +
+      C_IMAGE * IMAGE[word];
 
-    B_WORDS[word] = normal_rng(mi_word, sigma_B_WORDS);
+    C_WORDS[word] = normal_rng(mi_word, sigma_C_WORDS);
   }
 
   real<lower=0> sigma_RT = exponential_rng(2);
 
   for (obs in 1:N_OBS) {
-    mi_obs[obs] = A_SUBS[SUBS[obs]] +
-      B_WORDS[WORDS[obs]];
+    mi_obs[obs] = A_0 +
+      B_SUBS[SUBS[obs]] +
+      C_WORDS[WORDS[obs]];
   }
 
   RT_rep = lognormal_rng(mi_obs, sigma_RT);
