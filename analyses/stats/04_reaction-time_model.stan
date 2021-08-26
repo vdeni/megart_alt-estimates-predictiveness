@@ -93,4 +93,12 @@ generated quantities {
   }
 
   RT_rep = lognormal_rng(mi_obs, sigma_RT);
+
+  // calculate log-likelihood
+  vector[N_OBS] log_lik;
+
+  for (obs in 1:N_OBS) {
+    log_lik[obs] = lognormal_lpdf(RT[obs] | A_SUBS[SUBS[obs]] +
+                                    B_WORDS[WORDS[obs]], sigma_RT);
+  }
 }
