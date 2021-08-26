@@ -30,7 +30,6 @@ parameters {
   real<lower=0> sigma_A; // standard deviation of p-s parameter distribution
 
   vector[N_WORDS] B_0; // word-specific intercept
-  real<lower=0> sigma_B_0; // standard deviation of w-s intercept distribution
 
   real B_SUBFREQ; // coefficient for subjective frequency effect
   real B_IMAGE; // coefficient for imageability effect
@@ -68,7 +67,6 @@ model {
   A_SUBS ~ normal(0, .75);
 
   B_0 ~ normal(0, .5);
-  sigma_B_0 ~ exponential(1);
 
   B_SUBFREQ ~ normal(-0.5, .7);
   B_IMAGE ~ normal(-0.25, .7);
@@ -76,17 +74,25 @@ model {
   B_WORDS ~ normal(mi_word, sigma_B_WORDS);
   sigma_B_WORDS ~ exponential(1);
 }
-// generated quantities {
-//   array[N_obs] real<lower=0> rt_rep;
-//   vector[N_obs] mi;
-// 
-//   for (n in 1:N_obs) {
-//     mi[n] = mi_A +
-//       A_sub[subs[n]] +
-//       C_word[words[n]] +
-//       B_subfreq * subfreq[n] +
-//       B_image + image[n];
-//   }
-// 
-//   rt_rep = lognormal_rng(mi, sigma_rt);
-// }
+generated quantities {
+  array[N_OBS] real<lower=0> RT_rep;
+  array[N_WORDS] real B_WORDS_rep;
+  vector[N_OBS] mi_obs;
+  vector[N_WORDS] mi_word;
+
+  for (word in 1:N_WORDS) {
+    mi_word[word] = B_0[word] +
+      B_SUBFREQ * SUBFREQ[word] +
+      B_IMAGE * IMAGE[word];
+  }
+
+  B_WORDS_rep = normal_rng(mi_word, sigma_B_WORDS);
+
+  for (obs in 1:N_OBS) {
+    mi_obs[obs] = mi_A +
+      A_SUBS[SUBS[obs]] +
+      B_WORDS_rep[WORDS[obs]];
+  }
+
+  RT_rep = lognormal_rng(mi_obs, sigma_RT);
+}
