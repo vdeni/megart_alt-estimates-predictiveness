@@ -73,25 +73,24 @@ model {
   B_WORDS ~ normal(mi_word, sigma_B_WORDS);
   sigma_B_WORDS ~ exponential(1);
 }
-// generated quantities {
-//   array[N_OBS] real<lower=0> RT_rep;
-//   array[N_WORDS] real B_WORDS_rep;
-//   vector[N_OBS] mi_obs;
-//   vector[N_WORDS] mi_word;
-// 
-//   for (word in 1:N_WORDS) {
-//     mi_word[word] = B_0[word] +
-//       B_SUBFREQ * SUBFREQ[word] +
-//       B_IMAGE * IMAGE[word];
-//   }
-// 
-//   B_WORDS_rep = normal_rng(mi_word, sigma_B_WORDS);
-// 
-//   for (obs in 1:N_OBS) {
-//     mi_obs[obs] = mi_A +
-//       A_SUBS[SUBS[obs]] +
-//       B_WORDS_rep[WORDS[obs]];
-//   }
-// 
-//   RT_rep = lognormal_rng(mi_obs, sigma_RT);
-// }
+generated quantities {
+  array[N_OBS] real<lower=0> RT_rep;
+  array[N_WORDS] real B_WORDS_rep;
+  vector[N_OBS] mi_obs;
+  vector[N_WORDS] mi_word;
+
+  for (word in 1:N_WORDS) {
+    mi_word[word] = B_0[word] +
+      B_SUBFREQ * SUBFREQ[word] +
+      B_IMAGE * IMAGE[word];
+  }
+
+  B_WORDS_rep = normal_rng(mi_word, sigma_B_WORDS);
+
+  for (obs in 1:N_OBS) {
+    mi_obs[obs] = A_SUBS[SUBS[obs]] +
+      B_WORDS_rep[WORDS[obs]];
+  }
+
+  RT_rep = lognormal_rng(mi_obs, sigma_RT);
+}
