@@ -27,8 +27,10 @@ data {
 generated quantities {
   array[N_OBS] real<lower=0> RT_rep;
   vector[N_OBS] mi_obs;
+
   real mi_A = normal_rng(6.5, .4);
   real<lower=0> sigma_A = exponential_rng(1);
+
   vector[N_SUBS] A_SUBS;
 
   for (sub in 1:N_SUBS) {

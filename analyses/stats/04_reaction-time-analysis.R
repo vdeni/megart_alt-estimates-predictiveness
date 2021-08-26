@@ -41,8 +41,8 @@ m_mean <- m_rt_model$sample(data = list('N_OBS' = nrow(.d),
                              chains = 2,
                              parallel_chains = 2,
                              iter_warmup = 1e3,
-                             iter_sampling = .5e3,
-                             adapt_delta = .80)
+                             iter_sampling = 5e3,
+                             adapt_delta = .85)
 .end <- Sys.time()
 
 d_summary <- m_mean$summary()
