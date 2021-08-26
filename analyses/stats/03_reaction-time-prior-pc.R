@@ -33,3 +33,38 @@ m_mean <- m_rt_model$sample(data = list('N_OBS' = nrow(.d),
                                         'IMAGE' = .d_words$image_mean),
                              iter_sampling = 5e3,
                              fixed_param = T)
+
+d_summary <- m_mean$summary()
+
+dplyr::filter(d_summary,
+              stringr::str_detect(variable,
+                                  'RT_rep')) %>%
+    dplyr::pull(.,
+                median) %>%
+    quantile(.,
+             c(.1, .5, .9))
+
+.draws <- m_mean$draws()
+
+d_draws <- .draws[, , ] %>%
+    dplyr::as_tibble(.) %>%
+    janitor::clean_names(.) %>%
+    dplyr::select(.,
+                  contains('rt_rep'))
+
+d_draws %<>%
+    dplyr::mutate(.,
+                  .iteration = 1:nrow(.)) %>%
+    rename_with(.,
+                .cols = everything(),
+                .fn = stringr::str_replace,
+                pattern = '^x1_',
+                replacement = '')
+
+apply(d_draws,
+      MARGIN = 1,
+      FUN = quantile,
+      c(.1, .5, .9)) %>%
+    apply(.,
+          MARGIN = 1,
+          FUN = median)
