@@ -18,23 +18,26 @@ m_rt_model <-
     cmdstanr::cmdstan_model(here::here('stats',
                                        '04_reaction-time_model.stan'))
 
-.data <- filter(d,
+.d <- filter(d,
                 string_id %in% sample(unique(d$string_id), 25, replace = F)) %>%
     group_by(string) %>%
     nest() %>%
     tibble::add_column(str_id = 1:nrow(.)) %>%
     unnest('data')
 
+.d_words <- filter(d_words,
+                   string_id %in% .d$string_id)
+
 # mean of ratings
 .start <- Sys.time()
-m_mean <- m_rt_model$sample(data = list('N_obs' = nrow(.data),
-                                        'N_subs' = max(.data$id_numeric),
-                                        'subs' = .data$id_numeric,
-                                        'N_words' = max(.data$str_id),
-                                        'words' = .data$str_id,
-                                        'rt' = .data$stimulus_rt,
-                                        'subfreq' = .data$subfreq_mean,
-                                        'image' = .data$image_mean),
+m_mean <- m_rt_model$sample(data = list('N_OBS' = nrow(.d),
+                                        'N_SUBS' = max(.d$id_numeric),
+                                        'SUBS' = .d$id_numeric,
+                                        'N_WORDS' = max(.d$str_id),
+                                        'WORDS' = .d$str_id,
+                                        'RT' = .d$stimulus_rt,
+                                        'SUBFREQ' = .d_words$subfreq_mean,
+                                        'IMAGE' = .d_words$image_mean),
                              chains = 2,
                              parallel_chains = 2,
                              iter_warmup = 1e3,

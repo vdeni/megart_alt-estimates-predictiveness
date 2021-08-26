@@ -20,9 +20,9 @@ data {
   vector<lower=0>[N_OBS] RT; // reaction times in the RT data
 
   // predictors
-  vector[N_OBS] SUBFREQ; // subjective frequency estimates in the word data
+  vector[N_WORDS] SUBFREQ; // subjective frequency estimates in the word data
 
-  vector[N_OBS] IMAGE; // imageability estimates in the word data
+  vector[N_WORDS] IMAGE; // imageability estimates in the word data
 }
 parameters {
   vector[N_SUBS] A_SUBS; // participant-specific parameters
