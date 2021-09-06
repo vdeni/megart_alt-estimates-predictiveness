@@ -25,36 +25,39 @@ data {
   vector[N_WORDS] IMAGE; // imageability estimates in the word data
 }
 parameters {
-  real A_0;
+  real a_0;
 
-  vector[N_SUBS] B_SUBS; // participant-specific parameters
-  real mi_B_SUBS; // mean of participant-specific parameter distribution
-  real<lower=0> sigma_B_SUBS; // standard deviation of p-s parameter distribution
+  vector[N_SUBS] z_b_SUBS;
+  real mi_b_SUBS; // mean of participant-specific parameter distribution
+  real<lower=0> sigma_b_SUBS; // standard deviation of p-s parameter distribution
 
-  vector[N_WORDS] C_0; // word-specific intercept
+  vector[N_WORDS] c_0; // word-specific intercept
 
-  real C_SUBFREQ; // coefficient for subjective frequency effect
-  real C_IMAGE; // coefficient for imageability effect
+  real c_SUBFREQ; // coefficient for subjective frequency effect
+  real c_IMAGE; // coefficient for imageability effect
 
   real<lower=0> sigma_RT; // standard deviation of reaction time distributions
 
-  vector[N_WORDS] C_WORDS; // per-word parameter TODO: better description
-  real<lower=0> sigma_C_WORDS; // per-word standard deviation
+  vector[N_WORDS] c_WORDS;
+  real<lower=0> sigma_c_WORDS; // per-word standard deviation
+}
+transformed parameters {
+  vector[N_SUBS] b_SUBS = mi_b_SUBS + z_b_SUBS * sigma_b_SUBS;
 }
 model {
   vector[N_OBS] mi_obs; // location parameter of lognormal distro for each response
   vector[N_WORDS] mi_word; // location parameter for distro of word components
 
   for (word in 1:N_WORDS) {
-    mi_word[word] = C_0[word] +
-      C_SUBFREQ * SUBFREQ[word] +
-      C_IMAGE * IMAGE[word];
+    mi_word[word] = c_0[word] +
+      c_SUBFREQ * SUBFREQ[word] +
+      c_IMAGE * IMAGE[word];
   }
 
   for (obs in 1:N_OBS) {
-    mi_obs[obs] = A_0 +
-      B_SUBS[SUBS[obs]] +
-      C_WORDS[WORDS[obs]];
+    mi_obs[obs] = a_0 +
+      b_SUBS[SUBS[obs]] +
+      c_WORDS[WORDS[obs]];
   }
 
   // likelihood
@@ -63,51 +66,50 @@ model {
   // priors
   sigma_RT ~ exponential(2);
 
-  A_0 ~ normal(6.5, .4);
+  a_0 ~ normal(6.5, .4);
 
-  mi_B_SUBS ~ normal(0, .5);
-  sigma_B_SUBS ~ exponential(1);
+  z_b_SUBS ~ std_normal();
+  mi_b_SUBS ~ normal(0, .5);
+  sigma_b_SUBS ~ exponential(1);
 
-  B_SUBS ~ normal(mi_B_SUBS, sigma_B_SUBS);
+  c_0 ~ normal(0, .5);
 
-  C_0 ~ normal(0, .5);
+  c_SUBFREQ ~ normal(-0.5, .7);
+  c_IMAGE ~ normal(-0.25, .7);
 
-  C_SUBFREQ ~ normal(-0.5, .7);
-  C_IMAGE ~ normal(-0.25, .7);
-
-  C_WORDS ~ normal(mi_word, sigma_C_WORDS);
-  sigma_C_WORDS ~ exponential(1);
+  c_WORDS ~ normal(mi_word, sigma_c_WORDS);
+  sigma_c_WORDS ~ exponential(1);
 }
-generated quantities {
-  array[N_OBS] real<lower=0> RT_rep;
-
-  // array[N_WORDS] real C_WORDS_rep;
-
-  vector[N_OBS] mi_obs;
-  // vector[N_WORDS] mi_word;
-
-  // for (word in 1:N_WORDS) {
-  //   mi_word[word] = C_0[word] +
-  //     C_SUBFREQ * SUBFREQ[word] +
-  //     C_IMAGE * IMAGE[word];
-  // }
-
-  // C_WORDS_rep = normal_rng(mi_word, sigma_C_WORDS);
-
-  for (obs in 1:N_OBS) {
-    mi_obs[obs] = A_0 +
-      B_SUBS[SUBS[obs]] +
-      C_WORDS[WORDS[obs]];
-  }
-
-  RT_rep = lognormal_rng(mi_obs, sigma_RT);
-
-  // calculate log-likelihood
-  vector[N_OBS] log_lik;
-
-  for (obs in 1:N_OBS) {
-    log_lik[obs] = lognormal_lpdf(RT[obs] | A_0 +
-                                    B_SUBS[SUBS[obs]] +
-                                    C_WORDS[WORDS[obs]], sigma_RT);
-  }
-}
+// generated quantities {
+//   array[N_OBS] real<lower=0> RT_rep;
+// 
+//   // array[N_WORDS] real C_WORDS_rep;
+// 
+//   vector[N_OBS] mi_obs;
+//   // vector[N_WORDS] mi_word;
+// 
+//   // for (word in 1:N_WORDS) {
+//   //   mi_word[word] = C_0[word] +
+//   //     C_SUBFREQ * SUBFREQ[word] +
+//   //     C_IMAGE * IMAGE[word];
+//   // }
+// 
+//   // C_WORDS_rep = normal_rng(mi_word, sigma_C_WORDS);
+// 
+//   for (obs in 1:N_OBS) {
+//     mi_obs[obs] = A_0 +
+//       B_SUBS[SUBS[obs]] +
+//       C_WORDS[WORDS[obs]];
+//   }
+// 
+//   RT_rep = lognormal_rng(mi_obs, sigma_RT);
+// 
+//   // calculate log-likelihood
+//   vector[N_OBS] log_lik;
+// 
+//   for (obs in 1:N_OBS) {
+//     log_lik[obs] = lognormal_lpdf(RT[obs] | A_0 +
+//                                     B_SUBS[SUBS[obs]] +
+//                                     C_WORDS[WORDS[obs]], sigma_RT);
+//   }
+// }
