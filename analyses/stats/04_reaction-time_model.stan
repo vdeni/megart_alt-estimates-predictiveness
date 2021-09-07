@@ -38,7 +38,7 @@ parameters {
 
   real<lower=0> sigma_RT; // standard deviation of reaction time distributions
 
-  vector[N_WORDS] c_WORDS;
+  vector[N_WORDS] c_WORDS; // per-word parameter TODO: better description
   real<lower=0> sigma_c_WORDS; // per-word standard deviation
 }
 transformed parameters {
@@ -64,21 +64,21 @@ model {
   RT ~ lognormal(mi_obs, sigma_RT);
 
   // priors
-  sigma_RT ~ exponential(2);
+  sigma_RT ~ exponential(3);
 
-  a_0 ~ normal(6.5, .4);
+  a_0 ~ normal(6.5, .25);
 
   z_b_SUBS ~ std_normal();
-  mi_b_SUBS ~ normal(0, .5);
-  sigma_b_SUBS ~ exponential(1);
+  mi_b_SUBS ~ normal(0, .15);
+  sigma_b_SUBS ~ exponential(6);
 
-  c_0 ~ normal(0, .5);
+  c_0 ~ normal(0, .15);
 
-  c_SUBFREQ ~ normal(-0.5, .7);
-  c_IMAGE ~ normal(-0.25, .7);
+  c_SUBFREQ ~ normal(-0.5, .15);
+  c_IMAGE ~ normal(-0.25, .15);
 
   c_WORDS ~ normal(mi_word, sigma_c_WORDS);
-  sigma_c_WORDS ~ exponential(1);
+  sigma_c_WORDS ~ exponential(6);
 }
 // generated quantities {
 //   array[N_OBS] real<lower=0> RT_rep;

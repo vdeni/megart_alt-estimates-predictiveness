@@ -27,29 +27,31 @@ data {
 generated quantities {
   array[N_OBS] real<lower=0> RT_rep;
   vector[N_OBS] mi_obs;
+  vector[N_SUBS] z_B_SUBS;
 
-  real A_0 = normal_rng(6.5, .4);
+  real A_0 = normal_rng(6.5, .25);
 
-  real mi_B = normal_rng(0, .5);
-  real<lower=0> sigma_B = exponential_rng(1);
+  real mi_B = normal_rng(0, .15);
+  real<lower=0> sigma_B = exponential_rng(6);
 
   vector[N_SUBS] B_SUBS;
 
   for (sub in 1:N_SUBS) {
-    B_SUBS[sub] = normal_rng(mi_B, sigma_B);
+    z_B_SUBS[sub] = std_normal_rng();
+    B_SUBS[sub] = mi_B + z_B_SUBS[sub] * sigma_B;
   }
 
   vector[N_WORDS] C_0;
 
   for (word in 1:N_WORDS) {
-    C_0[word] = normal_rng(0, .5);
+    C_0[word] = normal_rng(0, .15);
   }
 
-  real C_SUBFREQ = normal_rng(-0.5, .7);
-  real C_IMAGE = normal_rng(-.25, .7);
+  real C_SUBFREQ = normal_rng(-0.5, .15);
+  real C_IMAGE = normal_rng(-.25, .15);
 
   vector[N_WORDS] C_WORDS;
-  real sigma_C_WORDS = exponential_rng(1);
+  real sigma_C_WORDS = exponential_rng(6);
 
   for (word in 1:N_WORDS) {
     real mi_word = C_0[word] +
@@ -59,7 +61,7 @@ generated quantities {
     C_WORDS[word] = normal_rng(mi_word, sigma_C_WORDS);
   }
 
-  real<lower=0> sigma_RT = exponential_rng(2);
+  real<lower=0> sigma_RT = exponential_rng(3);
 
   for (obs in 1:N_OBS) {
     mi_obs[obs] = A_0 +
