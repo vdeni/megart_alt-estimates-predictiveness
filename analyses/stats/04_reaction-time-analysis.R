@@ -19,7 +19,7 @@ m_rt_model <-
                                        '04_reaction-time_model.stan'))
 
 .d <- filter(d,
-                string_id %in% sample(unique(d$string_id), 250, replace = F)) %>%
+                string_id %in% sample(unique(d$string_id), 80, replace = F)) %>%
     group_by(string) %>%
     nest() %>%
     tibble::add_column(str_id = 1:nrow(.)) %>%
@@ -38,8 +38,8 @@ m_mean <- m_rt_model$sample(data = list('N_OBS' = nrow(.d),
                                         'RT' = .d$stimulus_rt,
                                         'SUBFREQ' = .d_words$subfreq_mean,
                                         'IMAGE' = .d_words$image_mean),
-                             chains = 4,
-                             parallel_chains = 4,
+                             chains = 2,
+                             parallel_chains = 2,
                              iter_warmup = 2e3,
                              iter_sampling = 1.5e3,
                              adapt_delta = .80,

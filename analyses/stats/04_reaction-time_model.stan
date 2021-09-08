@@ -84,25 +84,35 @@ model {
 
   sigma_c_WORDS ~ exponential(6);
 }
-// generated quantities {
-//   array[N_OBS] real<lower=0> RT_rep;
-// 
-//   vector[N_OBS] mi_obs;
-// 
-//   for (obs in 1:N_OBS) {
-//     mi_obs[obs] = a_0 +
-//       b_SUBS[SUBS[obs]] +
-//       c_WORDS[WORDS[obs]];
-//   }
-// 
-//   RT_rep = lognormal_rng(mi_obs, sigma_RT);
-// 
-//   // calculate log-likelihood
-//   vector[N_OBS] log_lik;
-// 
-//   for (obs in 1:N_OBS) {
-//     log_lik[obs] = lognormal_lpdf(RT[obs] | a_0 +
-//                                     b_SUBS[SUBS[obs]] +
-//                                     c_WORDS[WORDS[obs]], sigma_RT);
-//   }
-// }
+generated quantities {
+  array[N_OBS] real<lower=0> RT_rep;
+  vector[N_WORDS] mi_word;
+  vector[N_WORDS] c_WORDS;
+  vector[N_OBS] mi_obs;
+
+  for (word in 1:N_WORDS) {
+    mi_word[word] = c_0[word] +
+      c_SUBFREQ * SUBFREQ[word] +
+      c_IMAGE * IMAGE[word];
+
+    c_WORDS[word] = mi_word[word] + z_c_WORDS[word] * sigma_c_WORDS;
+  }
+
+  for (obs in 1:N_OBS) {
+    mi_obs[obs] = a_0 +
+      b_SUBS[SUBS[obs]] +
+      c_WORDS[WORDS[obs]];
+  }
+
+  RT_rep = lognormal_rng(mi_obs, sigma_RT);
+
+  // calculate log-likelihood
+  vector[N_OBS] log_lik;
+
+  for (obs in 1:N_OBS) {
+    log_lik[obs] = lognormal_lpdf(RT[obs] | a_0 +
+                                    b_SUBS[SUBS[obs]] +
+                                    c_WORDS[WORDS[obs]],
+                                  sigma_RT);
+  }
+}
