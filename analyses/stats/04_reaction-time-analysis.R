@@ -38,11 +38,12 @@ m_mean <- m_rt_model$sample(data = list('N_OBS' = nrow(.d),
                                         'RT' = .d$stimulus_rt,
                                         'SUBFREQ' = .d_words$subfreq_mean,
                                         'IMAGE' = .d_words$image_mean),
-                             chains = 2,
-                             parallel_chains = 2,
+                             chains = 4,
+                             parallel_chains = 4,
                              iter_warmup = 2e3,
                              iter_sampling = 1.5e3,
-                             adapt_delta = .80)
+                             adapt_delta = .80,
+                             max_treedepth = 11)
 .end <- Sys.time()
 
 d_summary <- m_mean$summary()
