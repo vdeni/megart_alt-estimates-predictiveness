@@ -10,7 +10,9 @@ echo "Making tmp directory" $TDIR"/tmp"
 
 mkdir $TDIR/tmp
 
-for file in $(ls $TDIR/*csv)
+FILES=$(ls $TDIR/*csv)
+
+for file in $FILES
     do
         echo "Getting" $file
         cp $file $TDIR/tmp/
