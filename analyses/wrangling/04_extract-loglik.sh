@@ -18,6 +18,8 @@ for file in $(ls $TDIR/*csv)
         sed -i -e '/^#/d' $TDIR/tmp/$(basename $file)
         printf "\n\n>>>>>>>>>> Running R script.\n\n"
         Rscript 04_extract-loglik.R --args $(basename $file) $1
+        printf "\n\n>>>>>>>>>> Removing file copy from tmp.\n\n"
+        rm $TDIR/tmp/$(basename $file)
 done
 
 echo "Cleaning temp folder."
