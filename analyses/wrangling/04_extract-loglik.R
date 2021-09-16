@@ -5,7 +5,11 @@ data.table::setDTthreads(parallel::detectCores() / 2)
 
 .args <- commandArgs(trailingOnly = T)
 
-.infile <- .args[2]
+.infile <- here::here('stats',
+                      paste0('model-out-data_',
+                              .args[3]),
+                      'tmp',
+                      .args[2])
 
 .outfile <- here::here('stats',
                        paste0('model-out-data_',
