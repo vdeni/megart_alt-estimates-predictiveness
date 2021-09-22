@@ -16,7 +16,7 @@ echo "Making tmp directory" $TDIR"/tmp"
 
 mkdir $TDIR/tmp
 
-for file in $FILES
+for file in ${FILES[@]}
     do
         echo "Getting" $file
         cp $TDIR/$file $TDIR/tmp/
