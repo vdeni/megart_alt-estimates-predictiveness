@@ -16,8 +16,6 @@ echo "Making tmp directory" $TDIR"/tmp"
 
 mkdir $TDIR/tmp
 
-FILES=$(ls $TDIR/*csv)
-
 for file in $FILES
     do
         echo "Getting" $file
