@@ -19,7 +19,7 @@ mkdir $TDIR/tmp
 for file in $FILES
     do
         echo "Getting" $file
-        cp $file $TDIR/tmp/
+        cp $TDIR/$file $TDIR/tmp/
 
         echo "Cleaning comments with sed."
         sed -i -e '/^#/d' $TDIR/tmp/$(basename $file)
