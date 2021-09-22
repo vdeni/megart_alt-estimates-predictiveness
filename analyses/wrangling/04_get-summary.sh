@@ -7,10 +7,7 @@ set -eu -o pipefail
 VARS=(a_0 mi_b_SUBS sigma_b_SUBS c_0 c_SUBFREQ c_IMAGE\
  sigma_RT sigma_c_WORDS b_SUBS c_WORDS)
 
-if [ "$1" == "mean" ]
-    then
-        TDIR=../stats/model-out-data_$1
-fi
+TDIR=../stats/model-out-data_$1
 
 for i in $(seq 0 $(( ${#VARS[@]} - 1)) )
     do
