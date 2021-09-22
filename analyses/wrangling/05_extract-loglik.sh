@@ -25,7 +25,7 @@ for file in $FILES
         sed -i -e '/^#/d' $TDIR/tmp/$(basename $file)
 
         printf "\n\n>>>>>>>>>> Running R script.\n\n"
-        Rscript 05_extract-loglik.R --args $(basename $file) $1
+        Rscript 05_extract-loglik.R --args $TDIR/tmp/$(basename $file) $1
 
         printf "\n\n>>>>>>>>>> Removing file copy from tmp.\n\n"
         rm $TDIR/tmp/$(basename $file)
