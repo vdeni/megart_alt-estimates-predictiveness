@@ -28,7 +28,8 @@ rel_eff <- readRDS(here::here('stats',
 
 model_loo <- loo::loo(d_loglik,
                       r_eff = rel_eff,
-                      cores = 20)
+                      cores = 20,
+                      save_psis = T)
 
 saveRDS(model_loo,
         here::here('stats',
