@@ -16,10 +16,10 @@ data.table::setDTthreads(parallel::detectCores() / 2)
 
 d_rt_rep <- data.table::fread(cmd = .cmd)
 
-saveRDS(d_rt_rep,
-        here::here('stats',
-                   paste0('model-out-data_',
-                          .args[2]),
-                   paste0('d_rt-rep_',
-                          .args[2],
-                          '.RData')))
+data.table::fwrite(d_rt_rep,
+                   file = here::here('stats',
+                                     paste0('model-out-data_',
+                                            .args[2]),
+                                     paste0('d_rt-rep_',
+                                            .args[2],
+                                            '.csv')))
