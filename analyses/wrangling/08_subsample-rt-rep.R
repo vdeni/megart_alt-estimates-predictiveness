@@ -6,7 +6,7 @@ library(data.table)
 data.table::setDTthreads(parallel::detectCores() / 2)
 
 .cmd <- paste("awk 'BEGIN{srand(1)}
-              {if (rand() <= .07 || NR == 1) print $0}'",
+              {if (rand() <= .045 || NR == 1) print $0}'",
               here::here('stats',
                          paste0('model-out-data_',
                                 .args[2]),
