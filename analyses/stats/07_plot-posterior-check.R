@@ -6,10 +6,6 @@ library(dplyr)
 library(ggplot2)
 library(viridis)
 
-setwd(here::here())
-
-renv::activate()
-
 .args <- commandArgs(trailingOnly = T)
 
 source(here::here('wrangling',

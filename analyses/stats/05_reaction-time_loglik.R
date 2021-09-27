@@ -2,10 +2,6 @@ library(here)
 library(data.table)
 library(loo)
 
-setwd(here::here())
-
-renv::activate()
-
 .args <- commandArgs(trailingOnly = T)
 
 data.table::setDTthreads(parallel::detectCores() / 2)
