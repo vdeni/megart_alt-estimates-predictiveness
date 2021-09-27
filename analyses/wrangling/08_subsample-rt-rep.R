@@ -6,7 +6,7 @@ library(data.table)
 data.table::setDTthreads(parallel::detectCores() / 2)
 
 .cmd <- paste("awk 'BEGIN{srand(1)}
-              {if (rand() <= .40 || NR == 1) print $0}'",
+              {if (rand() <= .10 || NR == 1) print $0}'",
               here::here('stats',
                          paste0('model-out-data_',
                                 .args[2]),
@@ -20,6 +20,6 @@ data.table::fwrite(d_rt_rep,
                    file = here::here('stats',
                                      paste0('model-out-data_',
                                             .args[2]),
-                                     paste0('d_rt-rep_',
+                                     paste0('d_rt-rep-subsamp_',
                                             .args[2],
                                             '.csv')))
