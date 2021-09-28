@@ -46,3 +46,5 @@ analyses/stats/04_reaction-time_model
 analyses/stats/03_reaction-time_model_prior-pc
 
 analyses/stats/model-out-data_*
+
+**/*png
