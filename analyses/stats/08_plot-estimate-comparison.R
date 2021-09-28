@@ -5,10 +5,11 @@ library(dplyr)
 library(tidyr)
 library(viridis)
 
+.plot_width <- 12
+.viridis_begin <- .4
+
 source(here::here('wrangling',
                   '03_prepare-analysis-data.R'))
-
-.viridis_begin <- .4
 
 d_words %>%
     tidyr::pivot_longer(.,
@@ -41,12 +42,10 @@ d_words %>%
     scale_x_discrete(labels = c('latent_mean' = 'Latentna aritmetička sredina',
                                 'mean' = 'Aritmetička sredina',
                                 'median' = 'Medijan'))
-
-.width <- 12
     
 ggplot2::ggsave(filename = here::here('stats',
                                       'p_estimate-comparison.png'),
                 device = 'png',
                 bg = '#FFFFFF',
-                width = .width,
-                height = .width * 9 / 16)
+                width = .plot_width,
+                height = .plot_width * 9 / 16)

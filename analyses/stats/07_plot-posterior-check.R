@@ -6,6 +6,9 @@ library(dplyr)
 library(ggplot2)
 library(viridis)
 
+.viridis_begin <- .4
+.plot_width <- 12
+
 .args <- commandArgs(trailingOnly = T)
 
 source(here::here('wrangling',
@@ -29,8 +32,6 @@ d_rt_rep_mean %<>%
                         names_pattern = 'RT_rep\\.(\\d+)',
                         names_transform = list('rt_id' = as.integer),
                         values_to = 'rt_rep')
-
-.viridis_begin <- .4
 
 .plot_titles <- c('mean' = 'Aritmetička sredina',
                   'median' = 'Medijan',
@@ -67,8 +68,6 @@ p_prc <- ggplot2::ggplot(d_rt_rep_mean,
          y = '',
          title = .plot_titles[.args[2]])
 
-.width <- 12
-
 ggplot2::ggsave(p_prc,
                 filename = here::here('stats',
                                       paste0('model-out-data_',
@@ -78,5 +77,5 @@ ggplot2::ggsave(p_prc,
                                              '.png')),
                 device = 'png',
                 bg = '#FFFFFF',
-                width = .width,
-                height = .width * 9 / 16)
+                width = .plot_width,
+                height = .plot_width * 9 / 16)
