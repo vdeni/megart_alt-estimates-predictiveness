@@ -52,7 +52,7 @@ p_prc <- ggplot2::ggplot(d_rt_rep_mean,
     geom_density(color = 'black',
                  size = .03,
                  n = 8e3) +
-    coord_cartesian(xlim = c(0, 5e3)) +
+    coord_cartesian(xlim = c(0, 2e3)) +
     theme_minimal() +
     theme(panel.grid.major.y = element_blank(),
           panel.grid.minor.y = element_blank(),
@@ -60,10 +60,14 @@ p_prc <- ggplot2::ggplot(d_rt_rep_mean,
                                             color = '#cac7c7'),
           panel.grid.minor.x = element_line(linetype = 'dashed',
                                             color = '#cac7c7'),
-          axis.text.y = element_blank()) +
+          plot.title = element_text(hjust = .5),
+          axis.text.y = element_blank(),
+          text = element_text(family = 'Latin Modern Roman')) +
     labs(x = 'Vrijeme reakcije u milisekundama',
          y = '',
          title = .plot_titles[.args[2]])
+
+.width <- 12
 
 ggplot2::ggsave(p_prc,
                 filename = here::here('stats',
@@ -71,5 +75,8 @@ ggplot2::ggsave(p_prc,
                                              .args[2]),
                                       paste0('p_prc_',
                                              .args[2],
-                                             '.pdf')),
-                device = 'pdf')
+                                             '.png')),
+                device = 'png',
+                bg = '#FFFFFF',
+                width = .width,
+                height = .width * 9 / 16)
