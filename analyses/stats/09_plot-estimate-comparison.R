@@ -22,12 +22,18 @@ d_words %>%
                     aes(x = measure,
                         y = estimate,
                         group = string_id)) +
-    geom_point(stat = 'identity',
-               color = viridis::viridis(1,
-                                       begin = .viridis_begin)) +
-    geom_line(size = .03,
+    geom_line(size = .05,
               color = viridis::viridis(1,
-                                      begin = .viridis_begin)) +
+                                      begin = .viridis_begin),
+              linetype = 'dotted') +
+    geom_point(stat = 'identity',
+               fill = viridis::viridis(1,
+                                       begin = .viridis_begin),
+               color = 'black',
+               alpha = .3,
+               stroke = .3,
+               size = 3,
+               shape = 21) +
     facet_wrap(facets = vars(variable),
                nrow = 2,
                ncol = 1,
@@ -36,7 +42,7 @@ d_words %>%
     theme_minimal() +
     theme(panel.grid.major.x = element_blank(),
           panel.grid.minor.y = element_blank(),
-          text = element_text(family = 'Latin Modern Roman')) +
+          text = element_text(family = 'DejaVu Sans')) +
     labs(x = 'Mjera',
          y = 'Standardizirani iznos procjene') +
     scale_x_discrete(labels = c('latent_mean' = 'Latentna aritmetička sredina',
