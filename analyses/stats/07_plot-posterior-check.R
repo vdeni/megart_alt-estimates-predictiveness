@@ -53,7 +53,7 @@ p_prc <- ggplot2::ggplot(d_rt_rep_mean,
     geom_density(color = 'black',
                  size = .03,
                  n = 8e3) +
-    coord_cartesian(xlim = c(0, 2e3)) +
+    coord_cartesian(xlim = c(0, 1.5e3)) +
     theme_minimal() +
     theme(panel.grid.major.y = element_blank(),
           panel.grid.minor.y = element_blank(),
@@ -63,19 +63,15 @@ p_prc <- ggplot2::ggplot(d_rt_rep_mean,
                                             color = '#cac7c7'),
           plot.title = element_text(hjust = .5),
           axis.text.y = element_blank(),
-          text = element_text(family = 'Latin Modern Roman')) +
+          text = element_text(family = 'DejaVu Sans')) +
     labs(x = 'Vrijeme reakcije u milisekundama',
          y = '',
          title = .plot_titles[.args[2]])
 
-ggplot2::ggsave(p_prc,
-                filename = here::here('stats',
-                                      paste0('model-out-data_',
-                                             .args[2]),
-                                      paste0('p_prc_',
-                                             .args[2],
-                                             '.png')),
-                device = 'png',
-                bg = '#FFFFFF',
-                width = .plot_width,
-                height = .plot_width * 9 / 16)
+saveRDS(p_prc,
+        file = here::here('stats',
+                          paste0('model-out-data_',
+                                 .args[2]),
+                          paste0('p_prc_',
+                                 .args[2],
+                                 '.RData')))
