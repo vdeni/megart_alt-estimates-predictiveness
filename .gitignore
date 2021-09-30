@@ -48,5 +48,5 @@ analyses/stats/model-out-data_*
 **/*png
 
 presentation/*
-!presentation/drzb.tex
+!presentation/presentation_drzb.tex
 !presentation/reference.bib
