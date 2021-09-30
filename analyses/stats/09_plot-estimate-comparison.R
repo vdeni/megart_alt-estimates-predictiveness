@@ -31,8 +31,8 @@ d_words %>%
                                        begin = .viridis_begin),
                color = 'black',
                alpha = .3,
-               stroke = .3,
-               size = 3,
+               stroke = .5,
+               size = 1,
                shape = 21) +
     facet_wrap(facets = vars(variable),
                nrow = 2,
