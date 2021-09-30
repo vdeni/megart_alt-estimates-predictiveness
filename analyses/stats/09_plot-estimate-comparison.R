@@ -4,6 +4,7 @@ library(magrittr)
 library(dplyr)
 library(tidyr)
 library(viridis)
+library(forcats)
 
 .plot_width <- 12
 .viridis_begin <- .4
@@ -17,7 +18,12 @@ d_words %>%
                         names_to = c('variable',
                                      'measure'),
                         names_pattern = '(image|subfreq)_(.*)',
+                        names_transform = list('measure' = as.factor),
                         values_to = 'estimate') %>%
+    dplyr::mutate(.,
+                  dplyr::across(.cols = 'measure',
+                                .fns = forcats::fct_relevel,
+                                'mean', 'latent_mean', 'median')) %>%
     ggplot2::ggplot(.,
                     aes(x = measure,
                         y = estimate,
@@ -37,6 +43,7 @@ d_words %>%
     facet_wrap(facets = vars(variable),
                nrow = 2,
                ncol = 1,
+               strip.position = 'right',
                labeller = as_labeller(c('image' = 'Predočivost',
                                         'subfreq' = 'Subjektivna čestina'))) +
     theme_minimal() +
