@@ -117,7 +117,12 @@
             \item megastudija
 
             \item hrvatski --- MegaHR
-                \tinycitep{petistanticPsiholingvistickeMjereIspitivanja2018}
+
+            \begin{itemize}
+                \item
+                    \citet{peti-stanticCroatianPsycholinguisticDatabase2021}
+                \item Tonković i sur. (2021)
+            \end{itemize}
 
         \end{itemize}
         
@@ -148,6 +153,11 @@
                     \pause
 
                     \item predočivost (P)
+
+                    \pause
+
+                    \item medijan, aritmetička sredina, latentna aritmetička
+                        sredina
 
                 \end{itemize}
         \end{itemize}
@@ -190,7 +200,6 @@
                 \gamma_{SF} \times SF_n +
                 \gamma_{P} \times P_n}
         \end{align*}
-
     \end{frame}
 \endgroup
 
@@ -207,13 +216,14 @@
         \begin{itemize}
             \item usporedba modela na temelju procijenjene prediktivnosti za
                 podatke van prikupljenog uzorka
+                {\scriptsize \citep*{vehtariPracticalBayesianModel2017}}
 
             \vspace{2em}
 
             \pause
 
             \begin{tabular}{lrr}
-                model & \(\Delta ELPD\) & \(SE_{\Delta}\) \\[1.0em]
+                model & \(\Delta ELPD_{psis-loo}\) & \(SE_{\Delta}\) \\[1.0em]
                 aritmetička sredina & --- & --- \\
                 medijan & \(-3.8\) & \(3.2\) \\
                 latentna aritmetička sredina & \(-4.5\) & \(4.6\)
