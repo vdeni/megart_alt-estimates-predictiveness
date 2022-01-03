@@ -52,7 +52,7 @@ d_image_dupes$data <- d_image_dupes$data %>%
                             nrow = 1))
 
 n_raters <- purrr::map_int(d_image_dupes$data,
-                          ncol) %>%
+                           ncol) %>%
     max(.)
 
 d_image_dupes$data <- d_image_dupes$data %>%
@@ -73,7 +73,8 @@ d_image_dupes <- d_image_dupes$data %>%
     dplyr::ungroup(.)
 
 # combine ratings in the two dataframes
-d_image <- dplyr::bind_rows(d_image, d_image_dupes)
+d_image <- dplyr::bind_rows(d_image,
+                            d_image_dupes)
 
 # get mean and median
 d_image$mean <- d_image %>%
@@ -115,7 +116,8 @@ d_subfreq <- readr::read_tsv(here::here('data',
 d_subfreq %<>%
     magrittr::set_colnames(.,
                            c('string',
-                           paste0('rater_', 1:(ncol(.) - 1))))
+                             paste0('rater_',
+                                    1:(ncol(.) - 1))))
 
 # remove duplicated entries
 d_subfreq %<>%
@@ -148,7 +150,7 @@ d_subfreq_dupes$data <- d_subfreq_dupes$data %>%
                             nrow = 1))
 
 n_raters <- purrr::map_int(d_subfreq_dupes$data,
-                          ncol) %>%
+                           ncol) %>%
     max(.)
 
 d_subfreq_dupes$data <- d_subfreq_dupes$data %>%
@@ -169,7 +171,8 @@ d_subfreq_dupes <- d_subfreq_dupes$data %>%
     dplyr::ungroup(.)
 
 # combine ratings in the two dataframes
-d_subfreq <- dplyr::bind_rows(d_subfreq, d_subfreq_dupes)
+d_subfreq <- dplyr::bind_rows(d_subfreq,
+                              d_subfreq_dupes)
 
 # get mean and median
 d_subfreq$mean <- d_subfreq %>%

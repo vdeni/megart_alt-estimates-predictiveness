@@ -1,0 +1,20 @@
+---
+output:
+    word_document
+---
+
+```{r setup, echo=F, message=F, eval=T}
+library(here)
+library(magrittr)
+library(ggplot2)
+
+knitr::opts_chunk$set(echo = F,
+                      message = F,
+                      include = T,
+                      out.width = '90%',
+                      fig.align = 'center',
+                      dpi = 300,
+                      device = 'png')
+
+theme_set(theme_minimal())
+```
