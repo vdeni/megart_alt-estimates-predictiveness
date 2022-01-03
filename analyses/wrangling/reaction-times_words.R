@@ -1,4 +1,6 @@
 # extract word strings present in the reaction time data
+renv::activate()
+
 library(here)
 
 source(here::here('wrangling',
