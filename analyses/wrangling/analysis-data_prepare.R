@@ -4,19 +4,19 @@ library(here)
 
 # source RT data and psycholinguistic mean and median estimates
 source(here::here('wrangling',
-                  '01_merge-rt.R'))
+                  'reatcion-times_merge.R'))
 
 source(here::here('wrangling',
-                  '02_prepare-psycholing-data.R'))
+                  'psycholing-data_prepare.R'))
 
 # load latent mean estimates
 d_latent_image <-
     readr::read_csv(here::here('stats',
-                               '02_latent-mean_estimates_imageability.csv'))
+                               'latent-mean_estimates_imageability.csv'))
 
 d_latent_subfreq <- 
     readr::read_csv(here::here('stats',
-                               '02_latent-mean_estimates_subfreq.csv'))
+                               'latent-mean_estimates_subfreq.csv'))
 
 # remove strings whose chains haven't converged according to the Rhat statistic;
 # reference value 1.1 used, as per Kruschke: Doing Bayesian Data Analysis (2015,

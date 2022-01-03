@@ -1,7 +1,7 @@
 # extract word strings present in the reaction time data
-renv::activate()
-
 library(here)
+
+.args <- commandArgs(trailingOnly = T)
 
 source(here::here('wrangling',
                   'reaction-times_merge.R'))
@@ -16,4 +16,4 @@ strings <- select(strings,
 readr::write_csv(strings,
                  here('data',
                       'reaction-times',
-                      'reaction-times_words.csv'))
+                      .args[2]))

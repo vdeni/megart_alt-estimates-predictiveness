@@ -4,7 +4,7 @@ library(tidyr)
 
 # load dataframes with estimates
 source(here::here('wrangling',
-                  '02_prepare-psycholing-data.R'))
+                  'psycholing-data_prepare.R'))
 
 # add string id
 d_image %<>%
@@ -36,12 +36,12 @@ for (i in 1:max(unique(d_image_long$string_id))) {
         # compile model and recompile every 10 iterations
         m_probit <-
             cmdstanr::cmdstan_model(here::here('stats',
-                                               '02_latent-mean_model.stan'))
+                                               'latent-mean_model.stan'))
     }
     else if (i %% 10 == 0) {
         m_probit <-
             cmdstanr::cmdstan_model(here::here('stats',
-                                               '02_latent-mean_model.stan'),
+                                               'latent-mean_model.stan'),
                                     force_recompile = T)
     }
 
@@ -93,4 +93,4 @@ estimates <- dplyr::select(d_image,
 
 readr::write_csv(estimates,
                  here::here('stats',
-                            '02_latent-mean_estimates_imageability.csv'))
+                            'latent-mean_estimates_imageability.csv'))
