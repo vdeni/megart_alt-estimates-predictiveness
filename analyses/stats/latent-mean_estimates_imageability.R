@@ -2,6 +2,8 @@ library(here)
 library(cmdstanr)
 library(tidyr)
 
+.args <- commandArgs(trailingOnly = T)
+
 # load dataframes with estimates
 source(here::here('wrangling',
                   'psycholing-data_prepare.R'))
@@ -53,8 +55,8 @@ for (i in 1:max(unique(d_image_long$string_id))) {
                                                      'Y' = .data$rating,
                                                      'c_1' = 1.5,
                                                      'c_4' = 4.5),
-                                         chains = 9,
-                                         parallel_chains = 9,
+                                         chains = 24,
+                                         parallel_chains = 24,
                                          iter_warmup = 3e3,
                                          iter_sampling = 4e3,
                                          adapt_delta = .93)
@@ -70,7 +72,7 @@ for (i in 1:max(unique(d_image_long$string_id))) {
                       ess_bulk,
                       ess_tail) %>%
         dplyr::filter(.,
-                      variable == 'mu') %>%
+                      variable == 'mi') %>%
         tidyr::pivot_wider(.,
                            names_from = 'variable',
                            names_glue = '{variable}_{.value}',
@@ -93,4 +95,4 @@ estimates <- dplyr::select(d_image,
 
 readr::write_csv(estimates,
                  here::here('stats',
-                            'latent-mean_estimates_imageability.csv'))
+                            .args[2]))
