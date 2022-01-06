@@ -8,13 +8,15 @@ library(tidyr)
 source(here::here('wrangling',
                   'psycholing-data_prepare.R'))
 
+d <- eval(parse(text = .args[3]))
+
 # add string id
-d_image %<>%
+d %<>%
     dplyr::mutate(.,
                   string_id = 1:nrow(.))
 
 # transform data to long for analysis
-d_image_long <- d_image %>%
+d_long <- d %>%
     tidyr::pivot_longer(.,
                         cols = matches('rater'),
                         names_to = 'rater',
@@ -25,7 +27,7 @@ d_image_long <- d_image %>%
 estimates <- tibble()
 
 # loop over words, extract estimates
-for (i in 1:max(unique(d_image_long$string_id))) {
+for (i in 1:max(unique(d_long$string_id))) {
 
     print(paste(paste0(rep('#', 30),
                        collapse = ''),
@@ -47,7 +49,7 @@ for (i in 1:max(unique(d_image_long$string_id))) {
                                     force_recompile = T)
     }
 
-    .data <- dplyr::filter(d_image_long,
+    .data <- dplyr::filter(d_long,
                            string_id == i)
 
     .m_probit_samples <- m_probit$sample(data = list('K' = 5,
@@ -86,7 +88,7 @@ for (i in 1:max(unique(d_image_long$string_id))) {
                            .out)
 }
 
-estimates <- dplyr::select(d_image,
+estimates <- dplyr::select(d,
                            string,
                            string_id) %>%
     dplyr::left_join(estimates,

@@ -6,7 +6,17 @@
 
 ## >>>>> concrete
 latent-mean_estimates_imageability.csv:\
-	latent-mean_estimates_imageability.R\
+	latent-mean_estimates.R\
 	latent-mean_model.stan
-	cd ..; Rscript stats/latent-mean_estimates_imageability.R \
-		--args $@
+	cd ..; Rscript stats/latent-mean_estimates.R\
+		--args\
+		$@\ # output file name
+		d_image # dataset which to analyze
+
+latent-mean_estimates_subfreq.csv:\
+	latent-mean_estimates.R\
+	latent-mean_model.stan
+	cd ..; Rscript stats/latent-mean_estimates.R\
+		--args\
+		$@\ # output file name
+		d_subfreq # dataset which to analyze
