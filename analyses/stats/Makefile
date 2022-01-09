@@ -32,3 +32,6 @@ latent-mean_estimates_subfreq.csv:\
 		--args\
 		$@\
 		d_subfreq
+
+latent-mean_model.stan: latent-mean_model-check.stan
+	sed -e '/^generated quantities/,$$ d' $< > $@

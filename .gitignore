@@ -45,6 +45,9 @@ analyses/stats/latent-mean_model
 analyses/stats/reaction-time_model
 analyses/stats/reaction-time_model_prior-pc
 
+analyses/stats/latent-mean_*csv
+analyses/stats/*tmp*/
+
 analyses/stats/model-out-data_*
 
 **/*png

@@ -3,10 +3,10 @@ data {
 
   int<lower=0> N; // number of data points
 
- int<lower=1, upper=K> Y[N]; // data vector, i.e. psycholinguistic ratings
+  int<lower=1, upper=K> Y[N]; // data vector, i.e. psycholinguistic ratings
 
- real<lower=1, upper=5> c_1;
- real<lower=1, upper=5> c_4;
+  real<lower=1, upper=5> c_1;
+  real<lower=1, upper=5> c_4;
 }
 parameters {
   real mi; // latent normal mean

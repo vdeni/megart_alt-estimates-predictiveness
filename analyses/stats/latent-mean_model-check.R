@@ -7,11 +7,11 @@ library(ggplot2)
 
 # load dataframes with estimates
 source(here::here('wrangling',
-                  '02_prepare-psycholing-data.R'))
+                  'psycholing-data_prepare.R'))
 
 # compile model
 m_probit <- cmdstanr::cmdstan_model(here::here('stats',
-                                               '01_latent-mean_model-check.stan'))
+                                               'latent-mean_model.stan'))
 
 ##### imageability #####
 # add string id
