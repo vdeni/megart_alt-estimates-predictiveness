@@ -3,9 +3,12 @@ library(here)
 library(magrittr)
 library(dplyr)
 library(readr)
+library(tidyr)
 
 d <- readr::read_csv(here::here('stats',
                                 'latent-mean_fake-data.csv'))
+
+d <- tidyr::drop_na(d)
 
 m_probit <- cmdstanr::cmdstan_model(here::here('stats',
                                                'latent-mean_model.stan'))
