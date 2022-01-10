@@ -13,6 +13,9 @@ latent-mean_estimates:\
 fake-data:\
 	latent-mean_fake-data.csv
 
+fake-data-check:\
+	latent-mean_fake-data_summaries.csv
+
 ## >>>>> concrete
 
 # --args:
@@ -21,7 +24,7 @@ fake-data:\
 latent-mean_estimates_imageability.csv:\
 	latent-mean_estimates.R\
 	latent-mean_model.stan
-	cd ..; Rscript stats/latent-mean_estimates.R\
+	cd ..; Rscript stats/$<\
 		--args\
 		$@\
 		d_image
@@ -32,7 +35,7 @@ latent-mean_estimates_imageability.csv:\
 latent-mean_estimates_subfreq.csv:\
 	latent-mean_estimates.R\
 	latent-mean_model.stan
-	cd ..; Rscript stats/latent-mean_estimates.R\
+	cd ..; Rscript stats/$<\
 		--args\
 		$@\
 		d_subfreq
@@ -41,4 +44,8 @@ latent-mean_model.stan: latent-mean_model-check.stan
 	sed -e '/^generated quantities/,$$ d' $< > $@
 
 latent-mean_fake-data.csv: latent-mean_fake-data-create.R
+	cd ..; Rscript stats/$<
+
+latent-mean_fake-data_summaries.csv: latent-mean_fake-data-check.R\
+	fake-data
 	cd ..; Rscript stats/$<
