@@ -33,11 +33,13 @@ d_plot$in_interval <- ifelse(d_plot$mi >= d_plot$q5 & d_plot$mi <= d_plot$q95,
 ggplot2::ggplot(d_plot,
                 aes(x = mi,
                     y = mean,
-                    group = .iter)) +
+                    group = .iter,
+                    color = in_interval)) +
     ggplot2::geom_point(size = 3,
                         alpha = .7) +
     ggplot2::geom_errorbar(aes(ymin = q5,
-                               ymax = q95)) +
+                               ymax = q95),
+                           alpha = .7) +
     ggplot2::geom_abline(slope = 1) +
     ggplot2::scale_x_continuous(breaks = 1:5,
                                 labels = 1:5,

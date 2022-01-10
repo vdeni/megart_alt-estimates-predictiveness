@@ -46,6 +46,6 @@ latent-mean_model.stan: latent-mean_model-check.stan
 latent-mean_fake-data.csv: latent-mean_fake-data-create.R
 	cd ..; Rscript stats/$<
 
-latent-mean_fake-data_summaries.csv: latent-mean_fake-data-check.R\
+latent-mean_fake-data_summaries.csv: latent-mean_fake-data-analyse.R\
 	fake-data
 	cd ..; Rscript stats/$<
