@@ -1,7 +1,6 @@
 library(here)
 library(cmdstanr)
 library(tidyr)
-library(bayesplot)
 library(stringr)
 library(ggplot2)
 

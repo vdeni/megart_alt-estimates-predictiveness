@@ -2,12 +2,16 @@
 
 # >>>>> recipes
 .PHONY:\
-	latent-mean_estimates
+	latent-mean_estimates\
+	fake-data
 
 ## >>>>> abstract
 latent-mean_estimates:\
 	latent-mean_estimates_imageability.csv\
 	latent-mean_estimates_subfreq.csv
+
+fake-data:\
+	latent-mean_fake-data.csv
 
 ## >>>>> concrete
 
@@ -35,3 +39,6 @@ latent-mean_estimates_subfreq.csv:\
 
 latent-mean_model.stan: latent-mean_model-check.stan
 	sed -e '/^generated quantities/,$$ d' $< > $@
+
+latent-mean_fake-data.csv: latent-mean_fake-data-create.R
+	cd ..; Rscript stats/$<

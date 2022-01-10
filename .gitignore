@@ -42,6 +42,7 @@ analyses/data/
 
 analyses/stats/latent-mean_model-check
 analyses/stats/latent-mean_model
+analyses/stats/latent-mean_fake-data
 analyses/stats/reaction-time_model
 analyses/stats/reaction-time_model_prior-pc
 
