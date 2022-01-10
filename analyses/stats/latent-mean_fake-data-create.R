@@ -17,7 +17,7 @@ m_probit <- cmdstanr::cmdstan_model(here::here('stats',
                                      chains = 1,
                                      parallel_chains = 1,
                                      iter_warmup = 0,
-                                     iter_sampling = 500,
+                                     iter_sampling = 1000,
                                      fixed_param = T)
 
 .draws <- .m_probit_samples$draws() %>%

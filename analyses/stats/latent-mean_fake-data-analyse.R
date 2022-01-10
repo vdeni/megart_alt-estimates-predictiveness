@@ -23,10 +23,10 @@ for (i in 1:max(unique(d$.iter))) {
                     'c_4' = 4.5)
 
     .m_probit_samples <- m_probit$sample(data = datlist,
-                                         chains = 6,
-                                         parallel_chains = 6,
+                                         chains = 15,
+                                         parallel_chains = 15,
                                          iter_warmup = 2e3,
-                                         iter_sampling = 3e3)
+                                         iter_sampling = 1.2e3)
 
     .summary <- .m_probit_samples$summary() %>%
         dplyr::filter(.,
