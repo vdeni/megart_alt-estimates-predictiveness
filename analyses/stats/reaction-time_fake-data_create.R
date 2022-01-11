@@ -1,7 +1,9 @@
 library(here)
 library(dplyr)
+library(tidyr)
 library(magrittr)
 library(readr)
+library(stringr)
 library(cmdstanr)
 
 source(here::here('wrangling',
@@ -21,12 +23,34 @@ m_rt <- cmdstanr::cmdstan_model(here::here('stats',
                                          'SUBS' = .vec_subs,
                                          'N_WORDS' = .n_words,
                                          'WORDS' = .vec_words),
+                             seed = 1,
                              iter_sampling = 100,
                              fixed_param = T)
 
 .draws <- .m_rt_samples$draws() %>%
     dplyr::as_tibble(.) %>%
     janitor::clean_names(.)
+
+.draws %<>%
+    dplyr::mutate(.,
+                  .iter = 1:nrow(.))
+
+colnames(.draws) %<>%
+    stringr::str_replace(.,
+                         '^x1_',
+                         '')
+
+.draws %<>%
+    dplyr::select(.,
+                  !matches('mi_obs|z_b_subs')) %>%
+    tidyr::pivot_longer(.,
+                        cols = matches('rt_rep'),
+                        names_pattern = 'rt_rep_(\\d+)',
+                        names_to = '.obs_id',
+                        values_to = 'rt_rep') %>%
+    dplyr::mutate(.,
+                  dplyr::across('.obs_id',
+                                as.integer))
 
 readr::write_csv(.draws,
                  here('stats',

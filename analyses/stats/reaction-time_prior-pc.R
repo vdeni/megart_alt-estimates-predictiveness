@@ -31,8 +31,8 @@ m_mean <- m_rt_model$sample(data = list('N_OBS' = nrow(.d),
                                         'RT' = .d$stimulus_rt,
                                         'SUBFREQ' = .d_words$subfreq_mean,
                                         'IMAGE' = .d_words$image_mean),
-                             iter_sampling = 5e3,
-                             fixed_param = T)
+                            iter_sampling = 5e3,
+                            fixed_param = T)
 
 d_summary <- m_mean$summary()
 
