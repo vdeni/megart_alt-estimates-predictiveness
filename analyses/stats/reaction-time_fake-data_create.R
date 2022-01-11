@@ -5,6 +5,7 @@ library(magrittr)
 library(readr)
 library(stringr)
 library(cmdstanr)
+library(purrr)
 
 source(here::here('wrangling',
                   'analysis-data_prepare.R'))
@@ -42,7 +43,7 @@ colnames(.draws) %<>%
 
 .draws %<>%
     dplyr::select(.,
-                  !matches('mi_obs|z_b_subs')) %>%
+                  !matches('mi_obs|z_b_subs|theta')) %>%
     tidyr::pivot_longer(.,
                         cols = matches('rt_rep'),
                         names_pattern = 'rt_rep_(\\d+)',
@@ -50,7 +51,22 @@ colnames(.draws) %<>%
                         values_to = 'rt_rep') %>%
     dplyr::mutate(.,
                   dplyr::across('.obs_id',
-                                as.integer))
+                                as.integer)) %>%
+    dplyr::group_by(.,
+                    .iter) %>%
+    tidyr::nest(.)
+
+.draws$data <- purrr::map(.draws$data,
+                          ~mutate(.x,
+                                  .word_id = .vec_words,
+                                  .sub_id = .vec_subs))
+
+.draws %<>%
+    tidyr::unnest(.,
+                  cols = 'data') %>%
+    dplyr::ungroup(.)
+
+.draws <- tidyr::drop_na(.draws)
 
 readr::write_csv(.draws,
                  here('stats',
