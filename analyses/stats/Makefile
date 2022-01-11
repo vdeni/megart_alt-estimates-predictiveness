@@ -3,18 +3,23 @@
 # >>>>> recipes
 .PHONY:\
 	latent-mean_estimates\
-	fake-data
+	latent-mean_fake-data_create\
+	latent-mean_fake-data_check\
+	reaction-time_fake-data_create
 
 ## >>>>> abstract
 latent-mean_estimates:\
 	latent-mean_estimates_imageability.csv\
 	latent-mean_estimates_subfreq.csv
 
-fake-data:\
+latent-mean_fake-data_create:\
 	latent-mean_fake-data.csv
 
-fake-data-check:\
+latent-mean_fake-data_check:\
 	latent-mean_fake-data_summaries.csv
+
+reaction-time_fake-data_create:\
+	reaction-time_fake-data.csv
 
 ## >>>>> concrete
 
@@ -44,5 +49,8 @@ latent-mean_fake-data.csv: latent-mean_fake-data_create.R
 	cd ..; Rscript stats/$<
 
 latent-mean_fake-data_summaries.csv: latent-mean_fake-data_analyse.R\
-	fake-data
+	latent-mean_fake-data_create
+	cd ..; Rscript stats/$<
+
+reaction-time_fake-data.csv: reaction-time_fake-data_create.R
 	cd ..; Rscript stats/$<
