@@ -1,6 +1,7 @@
 library(here)
 library(readr)
 library(dplyr)
+library(tidyr)
 library(magrittr)
 library(ggplot2)
 
@@ -29,6 +30,9 @@ d_plot <- dplyr::left_join(d_summaries,
 d_plot$in_interval <- ifelse(d_plot$mi >= d_plot$q5 & d_plot$mi <= d_plot$q95,
                              T,
                              F)
+
+d_plot %<>%
+    tidyr::drop_na(.)
 
 ggplot2::ggplot(d_plot,
                 aes(x = mi,

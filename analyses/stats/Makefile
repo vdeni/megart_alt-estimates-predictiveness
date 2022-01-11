@@ -40,12 +40,9 @@ latent-mean_estimates_subfreq.csv:\
 		$@\
 		d_subfreq
 
-latent-mean_model.stan: latent-mean_model-check.stan
-	sed -e '/^generated quantities/,$$ d' $< > $@
-
-latent-mean_fake-data.csv: latent-mean_fake-data-create.R
+latent-mean_fake-data.csv: latent-mean_fake-data_create.R
 	cd ..; Rscript stats/$<
 
-latent-mean_fake-data_summaries.csv: latent-mean_fake-data-analyse.R\
+latent-mean_fake-data_summaries.csv: latent-mean_fake-data_analyse.R\
 	fake-data
 	cd ..; Rscript stats/$<

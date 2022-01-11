@@ -2,7 +2,7 @@
 
 # source analysis data
 source(here::here('wrangling',
-                  '03_prepare-analysis-data.R'))
+                  'analysis-data_prepare.R'))
 
 library(here)
 library(dplyr)
@@ -12,7 +12,7 @@ library(cmdstanr)
 # compile stan model
 m_rt_model <-
     cmdstanr::cmdstan_model(here::here('stats',
-                                       '03_reaction-time_model_prior-pc.stan'))
+                                       'reaction-time_model_prior-pc.stan'))
 
 # use subset of data
 .d <- d %>%

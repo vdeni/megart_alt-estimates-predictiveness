@@ -4,7 +4,7 @@ library(here)
 
 # source RT data and psycholinguistic mean and median estimates
 source(here::here('wrangling',
-                  'reatcion-times_merge.R'))
+                  'reaction-times_merge.R'))
 
 source(here::here('wrangling',
                   'psycholing-data_prepare.R'))
@@ -19,15 +19,15 @@ d_latent_subfreq <-
                                'latent-mean_estimates_subfreq.csv'))
 
 # remove strings whose chains haven't converged according to the Rhat statistic;
-# reference value 1.1 used, as per Kruschke: Doing Bayesian Data Analysis (2015,
-# p. 181). also remove strings whose bulk ESS is less than 10000
+# reference value 1.01 used. also remove strings whose bulk ESS is less than
+# 10000
 d_latent_image %<>%
     dplyr::filter(.,
-                  mu_rhat <= 1.1 & mu_ess_bulk >= 1e4)
+                  mi_rhat <= 1.01 & mi_ess_bulk >= 1e4)
 
 d_latent_subfreq %<>%
     dplyr::filter(.,
-                  mu_rhat <= 1.1 & mu_ess_bulk >= 1e4)
+                  mi_rhat <= 1.01 & mi_ess_bulk >= 1e4)
 
 # combine data
 # imageability
@@ -40,7 +40,7 @@ d <- dplyr::select(d_image,
                      by = 'string')
 
 d <- dplyr::select(d_latent_image,
-                   'image_latent_mean' = mu_mean,
+                   'image_latent_mean' = mi_mean,
                    string) %>%
     dplyr::left_join(d,
                      .,
@@ -56,7 +56,7 @@ d <- dplyr::select(d_subfreq,
                      by = 'string')
 
 d <- dplyr::select(d_latent_subfreq,
-                   'subfreq_latent_mean' = mu_mean,
+                   'subfreq_latent_mean' = mi_mean,
                    string) %>%
     dplyr::left_join(d,
                      .,
