@@ -25,7 +25,7 @@ m_rt <- cmdstanr::cmdstan_model(here::here('stats',
                                          'N_WORDS' = .n_words,
                                          'WORDS' = .vec_words),
                              seed = 1,
-                             iter_sampling = 500,
+                             iter_sampling = 100,
                              fixed_param = T)
 
 .draws <- .m_rt_samples$draws() %>%

@@ -13,7 +13,18 @@ m_rt <- cmdstanr::cmdstan_model(here('stats',
 
 summaries <- dplyr::tibble()
 
-for (i in 1:nrow(d)) {
+for (i in 1:max(d$.iter)) {
+    if (i %% 10 == 0) {
+        print(paste(paste0(rep('#',
+                               30),
+                           collapse = ''),
+                    'i /',
+                    nrow(d),
+                    paste0(rep('#',
+                               30),
+                           collapse = '')))
+    }
+
     d_subset <- dplyr::filter(d,
                               .iter == i)
 
