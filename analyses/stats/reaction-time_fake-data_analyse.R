@@ -59,11 +59,8 @@ for (i in 1:max(d$.iter)) {
         dplyr::filter(.,
                       variable %in% c('c_SUBFREQ',
                                       'c_IMAGE')) %>%
-        select(.,
-               'variable',
-               'mean',
-               'q5',
-               'q95')
+        dplyr::mutate(.,
+                      .iter = i)
 
     summaries <- dplyr::bind_rows(summaries,
                                   .summary)
