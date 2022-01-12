@@ -13,12 +13,12 @@ m_rt <- cmdstanr::cmdstan_model(here('stats',
 
 summaries <- dplyr::tibble()
 
-for (i in 1:1) {
+for (i in 1:nrow(d)) {
     d_subset <- dplyr::filter(d,
                               .iter == i)
 
-    .SUBFREQ <- select(d_subset,
-                       matches('subfreq_\\d+')) %>%
+    .SUBFREQ <- dplyr::select(d_subset,
+                              matches('subfreq_\\d+')) %>%
         dplyr::distinct(.) %>%
         {t(.)[, 1]} %>%
         unname(.)
@@ -39,16 +39,17 @@ for (i in 1:1) {
                      'IMAGE' = .IMAGE)
 
     .m_rt_samples <- m_rt$sample(data = datalist,
-                                 chains = 6,
-                                 parallel_chains = 6,
-                                 iter_warmup = 1e3,
-                                 iter_sampling = 1e3)
+                                 chains = 15,
+                                 parallel_chains = 15,
+                                 iter_warmup = 1.5e3,
+                                 iter_sampling = 2e3)
 
     .summary <- .m_rt_samples$summary() %>%
         dplyr::filter(.,
                       variable %in% c('c_SUBFREQ',
-                                      'C_IMAGE'))
+                                      'c_IMAGE')) %>%
         select(.,
+               'variable',
                'mean',
                'q5',
                'q95')
@@ -57,6 +58,6 @@ for (i in 1:1) {
                                   .summary)
 }
 
-readr::write_csv(summaires,
+readr::write_csv(summaries,
                  here('stats',
                       'reaction-time_fake-data_summaries.csv'))
