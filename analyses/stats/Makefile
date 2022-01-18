@@ -6,7 +6,8 @@
 	latent-mean_fake-data_create\
 	latent-mean_fake-data_analyse\
 	reaction-time_fake-data_create\
-	reaction-time_fake-data_analyse
+	reaction-time_fake-data_analyse\
+	reaction-time_prior-pc
 
 ## >>>>> abstract
 latent-mean_estimates:\
@@ -24,6 +25,9 @@ reaction-time_fake-data_create:\
 
 reaction-time_fake-data_analyse:\
 	reaction-time_fake-data_summaries.csv
+
+reaction-time_prior-pc:\
+	reaction-time_prior-pc_data.csv
 
 ## >>>>> concrete
 
@@ -61,4 +65,8 @@ reaction-time_fake-data.csv: reaction-time_fake-data_create.R
 
 reaction-time_fake-data_summaries.csv: reaction-time_fake-data_analyse.R\
 	reaction-time_fake-data_create
+	cd ..; Rscript stats/$<
+
+reaction-time_prior-pc_data.csv: reaction-time_prior-pc_create.R\
+	reaction-time_model_prior-pc.stan
 	cd ..; Rscript stats/$<
