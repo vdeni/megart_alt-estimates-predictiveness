@@ -29,25 +29,27 @@ generated quantities {
 
   // vector of participant-specific means and z-values
   vector[N_SUBS * N_WORDS] mi_obs;
-  vector[N_SUBS] z_B_SUBS;
-  vector[N_SUBS] mi_B;
 
   // intercept
   real A_0 = normal_rng(7.0, .25);
 
+  // mean for participant-specific coefficient distribution
+  real mi_B;
   // standard deviation of participant-specific coefficient distribution
   real<lower=0> sigma_B = exponential_rng(6);
+  // z value for participant-specific coefficient
+  real z_B_SUB;
 
   // vector for holding participant-specific coefficients
   vector[N_SUBS] B_SUBS;
 
   for (sub in 1:N_SUBS) {
     // participant-specific coefficients
-    z_B_SUBS[sub] = std_normal_rng();
+    z_B_SUB = std_normal_rng();
 
-    mi_B[sub] = normal_rng(0, .15);
+    mi_B = normal_rng(0, .15);
 
-    B_SUBS[sub] = mi_B[sub] + z_B_SUBS[sub] * sigma_B;
+    B_SUBS[sub] = mi_B + z_B_SUB * sigma_B;
   }
 
   // create variables for holding word features
