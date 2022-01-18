@@ -5,7 +5,23 @@ participants. The second (word data) contains the subjective frequencies and
 imageability ratings for each of the words presented to the participants in the
 lexical decision task.
  */
+functions {
+  // Shifted lognormal distribution function (taken from:
+  // https://github.com/Nathaniel-Haines/Reliability_2020/blob/master/Code/Stan/jointSingle_RT_shiftlnorm.stan)
+  real shiftlnorm_lpdf(real x, real delta, real mu, real sigma) {
+    real log_pr;
 
+    log_pr = (-log((x - delta) * sigma * sqrt(2 * pi())) -
+      (log(x - delta) - mu)^2 / (2 * sigma^2));
+
+    return log_pr;
+  }
+
+  // for generating posterior predictions
+  real shiftlnorm_rng(real delta, real mu, real sigma) {
+    return delta + lognormal_rng(mu, sigma);
+  }
+}
 data {
   // ID variables
   int<lower=1> N_OBS; // number of reaction times in RT data
@@ -28,8 +44,9 @@ parameters {
   real a_0;
 
   vector[N_SUBS] z_b_SUBS;
-  real mi_b_SUBS; // mean of participant-specific parameter distribution
+  vector[N_SUBS] mi_b_SUBS; // mean of participant-specific parameter distribution
   real<lower=0> sigma_b_SUBS; // standard deviation of p-s parameter distribution
+  vector[N_SUBS] delta; // per-subject shift parameter for shift lognormal
 
   vector[N_WORDS] c_0; // word-specific intercept
 
@@ -47,7 +64,7 @@ transformed parameters {
 model {
   vector[N_OBS] mi_obs; // location parameter of lognormal distro for each response
   vector[N_WORDS] mi_word; // location parameter for distro of word components
-  vector[N_WORDS] c_WORDS; // per-word parameter TODO: better description
+  vector[N_WORDS] c_WORDS; // word-specific parameters
 
   for (word in 1:N_WORDS) {
     mi_word[word] = c_0[word] +
@@ -61,19 +78,22 @@ model {
     mi_obs[obs] = a_0 +
       b_SUBS[SUBS[obs]] +
       c_WORDS[WORDS[obs]];
-  }
 
-  // likelihood
-  RT ~ lognormal(mi_obs, sigma_RT);
+    // likelihood
+    RT[obs] ~ shiftlnorm(delta[SUBS[obs]],
+                         mi_obs[obs],
+                         sigma_RT);
+  }
 
   // priors
   sigma_RT ~ exponential(3);
 
-  a_0 ~ normal(6.5, .25);
+  a_0 ~ normal(7.0, .25);
 
   z_b_SUBS ~ std_normal();
   mi_b_SUBS ~ normal(0, .15);
   sigma_b_SUBS ~ exponential(6);
+  delta ~ normal(300, 25);
 
   c_0 ~ normal(0, .15);
 
@@ -102,17 +122,18 @@ generated quantities {
     mi_obs[obs] = a_0 +
       b_SUBS[SUBS[obs]] +
       c_WORDS[WORDS[obs]];
-  }
 
-  RT_rep = lognormal_rng(mi_obs, sigma_RT);
+    RT_rep[obs] = shiftlnorm_rng(delta[SUBS[obs]],
+                                 mi_obs[obs],
+                                 sigma_RT);
+  }
 
   // calculate log-likelihood
   vector[N_OBS] log_lik;
 
   for (obs in 1:N_OBS) {
-    log_lik[obs] = lognormal_lpdf(RT[obs] | a_0 +
-                                    b_SUBS[SUBS[obs]] +
-                                    c_WORDS[WORDS[obs]],
-                                  sigma_RT);
+    log_lik[obs] = shiftlnorm_lpdf(RT[obs] | delta[SUBS[obs]],
+                                   a_0 + b_SUBS[SUBS[obs]] + c_WORDS[WORDS[obs]],
+                                   sigma_RT);
   }
 }
