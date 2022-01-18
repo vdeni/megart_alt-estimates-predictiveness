@@ -1,3 +1,20 @@
+functions {
+  // Shifted lognormal distribution function (taken from:
+  // https://github.com/Nathaniel-Haines/Reliability_2020/blob/master/Code/Stan/jointSingle_RT_shiftlnorm.stan)
+  real shiftlnorm_lpdf(real x, real delta, real mu, real sigma) {
+    real log_pr;
+
+    log_pr = (-log((x - delta) * sigma * sqrt(2 * pi())) -
+      (log(x - delta) - mu)^2 / (2 * sigma^2));
+
+    return log_pr;
+  }
+
+  // for generating posterior predictions
+  real shiftlnorm_rng(real delta, real mu, real sigma) {
+    return delta + lognormal_rng(mu, sigma);
+  }
+}
 data {
   // ID variables
   int<lower=1> N_SUBS; // number of participants in RT data
@@ -13,12 +30,10 @@ generated quantities {
   // vector of participant-specific means and z-values
   vector[N_SUBS * N_WORDS] mi_obs;
   vector[N_SUBS] z_B_SUBS;
+  vector[N_SUBS] mi_B;
 
   // intercept
-  real A_0 = normal_rng(6.5, .25);
-
-  // participant-specific coefficients
-  real mi_B = normal_rng(0, .15);
+  real A_0 = normal_rng(7.0, .25);
 
   // standard deviation of participant-specific coefficient distribution
   real<lower=0> sigma_B = exponential_rng(6);
@@ -27,8 +42,12 @@ generated quantities {
   vector[N_SUBS] B_SUBS;
 
   for (sub in 1:N_SUBS) {
+    // participant-specific coefficients
     z_B_SUBS[sub] = std_normal_rng();
-    B_SUBS[sub] = mi_B + z_B_SUBS[sub] * sigma_B;
+
+    mi_B[sub] = normal_rng(0, .15);
+
+    B_SUBS[sub] = mi_B[sub] + z_B_SUBS[sub] * sigma_B;
   }
 
   // create variables for holding word features
@@ -68,11 +87,20 @@ generated quantities {
   // reaction time distribution sd
   real<lower=0> sigma_RT = exponential_rng(3);
 
+  // shift-lognormal shift parameter
+  vector<lower=0>[N_SUBS] delta;
+
+  for (sub in 1:N_SUBS) {
+    delta[sub] = normal_rng(300, 25);
+  }
+
   for (obs in 1:(N_SUBS * N_WORDS)) {
     mi_obs[obs] = A_0 +
       B_SUBS[SUBS[obs]] +
       C_WORDS[WORDS[obs]];
-  }
 
-  RT_rep = lognormal_rng(mi_obs, sigma_RT);
+    RT_rep[obs] = shiftlnorm_rng(delta[SUBS[obs]],
+                                 mi_obs[SUBS[obs]],
+                                 sigma_RT);
+  }
 }

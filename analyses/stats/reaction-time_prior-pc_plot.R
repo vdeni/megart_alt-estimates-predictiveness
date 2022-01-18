@@ -15,12 +15,12 @@ d_plot <- tidyr::pivot_longer(d,
                                            'observation'))
 
 # plot rt_rep
-# ggplot2::ggplot(d_plot,
-#                 aes(x = rt_rep,
-#                     group = iteration)) +
-#     ggplot2::geom_density(n = 1e4,
-#                           size = .1) +
-#     ggplot2::coord_cartesian(xlim = c(0, 3e3))
+ggplot2::ggplot(d_plot,
+                aes(x = rt_rep,
+                    group = iteration)) +
+    ggplot2::geom_density(n = 1e4,
+                          size = .1) +
+    ggplot2::coord_cartesian(xlim = c(0, 3e3))
 
 # plot median rts
 d_plot %>%
@@ -29,4 +29,5 @@ d_plot %>%
     dplyr::summarise(.,
                      med = median(rt_rep)) %>%
     ggplot(aes(x = med)) +
-    ggplot2::geom_histogram(color = 'white')
+    ggplot2::geom_histogram(color = 'white') +
+    coord_cartesian(xlim = c(0, 5e3))

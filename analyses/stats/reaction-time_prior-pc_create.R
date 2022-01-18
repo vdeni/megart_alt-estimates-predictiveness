@@ -5,7 +5,7 @@ library(dplyr)
 
 # compile stan model
 m_rt <- cmdstanr::cmdstan_model(here::here('stats',
-                                           'reaction-time_model_prior-pc.stan'))
+                                           'reaction-time_model_fake-data.stan'))
 
 # create prior-pc data
 .n_subs <- 50
