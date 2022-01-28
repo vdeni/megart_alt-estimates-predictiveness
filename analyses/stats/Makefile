@@ -31,9 +31,6 @@ reaction-time_prior-pc_create:\
 	reaction-time_prior-pc_data.csv
 
 reaction-time_analyse:\
-	reaction-time_analyse_median
-
-reaction-time_analyse_median:\
 	reaction-time_analysis_median_draws.csv\
 	reaction-time_analysis_median_loglik.RData\
 	reaction-time_analysis_median_summary.csv
@@ -76,7 +73,9 @@ reaction-time_prior-pc_data.csv:\
 	reaction-time_model_fake-data.stan
 	cd ..; Rscript stats/$<
 
-reaction-time_analyse_median:\
+reaction-time_analysis_median_draws.csv\
+reaction-time_analysis_median_loglik.RData\
+reaction-time_analysis_median_summary.csv:
 	reaction-time_analysis.R\
 	reaction-time_model.stan\
 	../wrangling/analysis-data_prepare.R
