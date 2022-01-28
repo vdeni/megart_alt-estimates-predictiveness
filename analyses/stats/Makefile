@@ -11,9 +11,6 @@
 
 all:\
 	latent-mean_estimates\
-	latent-mean_fake-data_create\
-	latent-mean_fake-data_analyse\
-	reaction-time_prior-pc_create\
 	reaction-time_analyse
 
 ## >>>>> abstract
@@ -75,8 +72,8 @@ reaction-time_prior-pc_data.csv:\
 
 reaction-time_analysis_median_draws.csv\
 reaction-time_analysis_median_loglik.RData\
-reaction-time_analysis_median_summary.csv:
+reaction-time_analysis_median_summary.csv:\
 	reaction-time_analysis.R\
 	reaction-time_model.stan\
 	../wrangling/analysis-data_prepare.R
-	cd ..; Rscript stats/$< --args 'median'
+	cd ..; Rscript stats/$< --args median
