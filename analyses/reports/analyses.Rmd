@@ -7,6 +7,8 @@ output:
 library(here)
 library(magrittr)
 library(ggplot2)
+library(dplyr)
+library(readr)
 
 knitr::opts_chunk$set(echo = F,
                       message = F,
@@ -18,3 +20,8 @@ knitr::opts_chunk$set(echo = F,
 
 theme_set(theme_minimal())
 ```
+
+To obtain the latent mean estimated subjective frequency and imageability
+ratings using a probit model, we first simulated data from the model to
+check whether the probit model is able to recover the parameters used to
+simulate the data.

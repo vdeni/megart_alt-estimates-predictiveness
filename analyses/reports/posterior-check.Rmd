@@ -1,0 +1,111 @@
+---
+output:
+    html_document:
+        toc: true
+        toc_float: true
+---
+
+# Setup
+
+```{r setup}
+renv::activate('..')
+
+library(dplyr)
+library(magrittr)
+library(here)
+library(data.table)
+library(knitr)
+library(kableExtra)
+library(ggplot2)
+library(tidyr)
+
+knitr::opts_chunk$set(message = F)
+
+.ess_bulk_lim <- 2e3
+
+.rhat_lim <- 1.01
+```
+
+```{r read-data}
+d_summary <-
+    data.table::fread(here::here('stats',
+                                 'reaction-time_analysis_median_summary.csv'))
+
+# sample 10% of draws
+.cmd <- paste("awk 'BEGIN{srand(1)}
+              {if (rand() <= .10 || NR == 1) print $0}'",
+              here('stats',
+                   'reaction-time_analysis_median_draws.csv'))
+
+# select only rt_rep columns
+.colnames_rt_rep <- readLines(here('wrangling',
+                                   'reaction-time_analysis_colnames_rt-rep.txt'))
+
+d_draws <- fread(cmd = .cmd,
+                 select = .colnames_rt_rep)
+
+d_draws$iteration <- 1:nrow(d_draws)
+
+source(here('wrangling',
+            'analysis-data_prepare.R'))
+```
+
+```{r pivot-long}
+d_draws %<>%
+    tidyr::pivot_longer(.,
+                        cols = matches('rt_rep'),
+                        names_pattern = 'x(\\d+)_rt_rep_(\\d+)',
+                        names_to = c('chain',
+                                     'observation'),
+                        values_to = 'rt_rep')
+```
+
+# ESS bulk
+Variables whose ESS bulk is less than `r .ess_bulk_lim` are:
+
+```{r ess-bulk}
+d_summary %>%
+    dplyr::filter(.,
+                  ess_bulk < .ess_bulk_lim) %>%
+    dplyr::select(.,
+                  variable,
+                  ess_bulk) %>%
+    knitr::kable(.) %>%
+    kableExtra::kable_styling('striped') %>%
+    kableExtra::scroll_box(height = '300px')
+```
+
+# Rhat
+
+Variables whose r-hat is less than `r .rhat_lim`:
+
+```{r rhat-lim}
+d_summary %>%
+    dplyr::filter(.,
+                  rhat > .rhat_lim) %>%
+    dplyr::select(.,
+                  variable,
+                  rhat) %>%
+    kable(.) %>%
+    kableExtra::kable_styling('striped') %>%
+    kableExtra::scroll_box(height = '300px')
+```
+
+# Posterior retrodictive check
+
+```{r plot-posterior-retrodictive-check}
+d_draws %>%
+    ggplot2::ggplot(.,
+                    aes(x = rt_rep,
+                        group = interaction(iteration,
+                                            chain))) +
+    ggplot2::geom_density(n = 1e4,
+                          size = .1) +
+    geom_density(inherit.aes = F,
+                 data = d,
+                 aes(x = stimulus_rt),
+                 color = 'red',
+                 n = 1e4) +
+    ggplot2::coord_cartesian(xlim = c(0,
+                                      5e3))
+```

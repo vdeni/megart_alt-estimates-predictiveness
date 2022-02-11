@@ -77,3 +77,9 @@ reaction-time_analysis_median_summary.csv:\
 	reaction-time_model.stan\
 	../wrangling/analysis-data_prepare.R
 	cd ..; Rscript stats/$< --args median
+
+..wrangling/reaction-time_analysis_colnames_rt-rep.txt:\
+	reaction-time_analysis_median_draws.csv
+	head -n 1 $< |\
+		sed -e 's/,/\n/g' |\
+		grep 'rt_rep' > $@

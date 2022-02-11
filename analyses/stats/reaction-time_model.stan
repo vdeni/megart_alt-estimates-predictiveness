@@ -56,7 +56,7 @@ parameters {
   real<lower=0> sigma_RT; // standard deviation of reaction time distributions
 
   vector[N_WORDS] z_c_WORDS;
-  real<lower=0> sigma_c_WORDS; // per-word standard deviation
+  real<lower=0> sigma_c_WORDS; // SD for word-specific coefficient distribution
 }
 transformed parameters {
   vector[N_SUBS] b_SUBS = mi_b_SUBS + z_b_SUBS * sigma_b_SUBS;

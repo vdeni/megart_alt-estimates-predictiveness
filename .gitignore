@@ -49,8 +49,13 @@ analyses/stats/reaction-time_model_fake-data
 
 analyses/stats/latent-mean_*csv
 analyses/stats/reaction-time_*csv
+analyses/stats/reaction-time_*RData
 analyses/stats/*tmp*/
 
 analyses/stats/model-out-data_*
 
+analyses/wrangling/*colnames_rt-rep.txt
+
 **/*png
+
+**/*html
