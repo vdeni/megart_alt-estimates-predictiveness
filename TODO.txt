@@ -1,0 +1,6 @@
+- provrti modele za dio podataka
+    - mean
+    -latent mean
+- usporedi modele
+- remake sve na serveru
+- provrti modele za cijele podatke
