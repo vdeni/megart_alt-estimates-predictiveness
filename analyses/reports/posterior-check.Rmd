@@ -3,6 +3,8 @@ output:
     html_document:
         toc: true
         toc_float: true
+params:
+    measure: "mean"
 ---
 
 # Setup
@@ -14,7 +16,6 @@ library(dplyr)
 library(magrittr)
 library(here)
 library(data.table)
-library(knitr)
 library(kableExtra)
 library(ggplot2)
 library(tidyr)
@@ -29,13 +30,17 @@ knitr::opts_chunk$set(message = F)
 ```{r read-data}
 d_summary <-
     data.table::fread(here::here('stats',
-                                 'reaction-time_analysis_median_summary.csv'))
+                                 paste0('reaction-time_analysis_',
+                                        params$measure,
+                                        '_summary.csv')))
 
 # sample 10% of draws
 .cmd <- paste("awk 'BEGIN{srand(1)}
               {if (rand() <= .10 || NR == 1) print $0}'",
               here('stats',
-                   'reaction-time_analysis_median_draws.csv'))
+                   paste0('reaction-time_analysis_',
+                          params$measure,
+                          '_draws.csv')))
 
 # select only rt_rep columns
 .colnames_rt_rep <- readLines(here('wrangling',

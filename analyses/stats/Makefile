@@ -1,4 +1,7 @@
 # >>>>> variables
+RT_ANALYSIS_PREREQ=reaction-time_analysis.R\
+	reaction-time_model.stan\
+	../wrangling/analysis-data_prepare.R
 
 # >>>>> recipes
 .PHONY:\
@@ -30,7 +33,13 @@ reaction-time_prior-pc_create:\
 reaction-time_analyse:\
 	reaction-time_analysis_median_draws.csv\
 	reaction-time_analysis_median_loglik.RData\
-	reaction-time_analysis_median_summary.csv
+	reaction-time_analysis_median_summary.csv\
+	reaction-time_analysis_mean_draws.csv\
+	reaction-time_analysis_mean_loglik.RData\
+	reaction-time_analysis_mean_summary.csv\
+	reaction-time_analysis_latent-mean_draws.csv\
+	reaction-time_analysis_latent-mean_loglik.RData\
+	reaction-time_analysis_latent-mean_summary.csv
 
 ## >>>>> concrete
 
@@ -73,12 +82,22 @@ reaction-time_prior-pc_data.csv:\
 reaction-time_analysis_median_draws.csv\
 reaction-time_analysis_median_loglik.RData\
 reaction-time_analysis_median_summary.csv:\
-	reaction-time_analysis.R\
-	reaction-time_model.stan\
-	../wrangling/analysis-data_prepare.R
+	$(RT_ANALYSIS_PREREQ)
 	cd ..; Rscript stats/$< --args median
 
-..wrangling/reaction-time_analysis_colnames_rt-rep.txt:\
+reaction-time_analysis_mean_draws.csv\
+reaction-time_analysis_mean_loglik.RData\
+reaction-time_analysis_mean_summary.csv:\
+	$(RT_ANALYSIS_PREREQ)
+	cd ..; Rscript stats/$< --args mean
+
+reaction-time_analysis_latent-mean_draws.csv\
+reaction-time_analysis_latent-mean_loglik.RData\
+reaction-time_analysis_latent-mean_summary.csv:\
+	$(RT_ANALYSIS_PREREQ)
+	cd ..; Rscript stats/$< --args latent_mean
+
+../wrangling/reaction-time_analysis_colnames_rt-rep.txt:\
 	reaction-time_analysis_median_draws.csv
 	head -n 1 $< |\
 		sed -e 's/,/\n/g' |\
