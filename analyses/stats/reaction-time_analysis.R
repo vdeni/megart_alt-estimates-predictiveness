@@ -19,7 +19,6 @@ library(readr)
 m_rt <- cmdstanr::cmdstan_model(here::here('stats',
                                            'reaction-time_model.stan'))
 
-# median of ratings
 m_samples <- m_rt$sample(data = list('N_OBS' = nrow(d),
                                      'N_SUBS' = max(d$id_numeric),
                                      'SUBS' = d$id_numeric,
@@ -35,7 +34,9 @@ m_samples <- m_rt$sample(data = list('N_OBS' = nrow(d),
                          chains = 24,
                          parallel_chains = 24,
                          iter_warmup = 1e3,
-                         iter_sampling = 1.5e3)
+                         iter_sampling = 1e2)
+
+print('>>>>> done sampling. extracting draws')
 
 m_draws <- m_samples$draws() %>%
     dplyr::as_tibble(.) %>%
@@ -43,7 +44,11 @@ m_draws <- m_samples$draws() %>%
 
 m_loglik <- m_samples$draws(variables = 'log_lik')
 
+print('>>>>> generating summary')
+
 m_summary <- m_samples$summary()
+
+print('>>>>> creating outfiles')
 
 readr::write_csv(m_draws,
                  here('stats',
