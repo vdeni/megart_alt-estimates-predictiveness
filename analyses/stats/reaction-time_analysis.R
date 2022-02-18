@@ -33,7 +33,7 @@ m_samples <- m_rt$sample(data = list('N_OBS' = nrow(d),
                                                            .args[2]))),
                          chains = 24,
                          parallel_chains = 24,
-                         iter_warmup = 1e3,
+                         iter_warmup = 1e2,
                          iter_sampling = 1e2)
 
 print('>>>>> done sampling. extracting draws')
@@ -48,7 +48,7 @@ print('>>>>> generating summary')
 
 m_summary <- m_samples$summary()
 
-print('>>>>> creating outfiles')
+print('>>>>> creating draws outfile')
 
 readr::write_csv(m_draws,
                  here('stats',
@@ -56,11 +56,15 @@ readr::write_csv(m_draws,
                              .args[2],
                              '_draws.csv')))
 
+print('>>>>> creating loglik outfile')
+
 saveRDS(m_loglik,
         here('stats',
              paste0('reaction-time_analysis_',
                     .args[2],
                     '_loglik.RData')))
+
+print('>>>>> creating summary outfile')
 
 write_csv(m_summary,
           here('stats',
