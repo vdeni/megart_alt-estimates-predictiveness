@@ -33,36 +33,38 @@ m_samples <- m_rt$sample(data = list('N_OBS' = nrow(d),
                                                            .args[2]))),
                          chains = 24,
                          parallel_chains = 24,
-                         iter_warmup = 1e2,
-                         iter_sampling = 1e2)
+                         iter_warmup = 1e3,
+                         iter_sampling = 1.25e3)
 
 print('>>>>> done sampling. extracting draws')
 
-m_draws <- m_samples$draws() %>%
+d_rt_rep <- m_samples$draws(variables = 'RT_rep') %>%
     dplyr::as_tibble(.) %>%
     janitor::clean_names(.)
 
-m_loglik <- m_samples$draws(variables = 'log_lik')
+d_loglik <- m_samples$draws(variables = 'log_lik')
 
-print('>>>>> generating summary')
+print('>>>>> creating rt_rep outfile')
 
-m_summary <- m_samples$summary()
-
-print('>>>>> creating draws outfile')
-
-readr::write_csv(m_draws,
+readr::write_csv(d_rt_rep,
                  here('stats',
                       paste0('reaction-time_analysis_',
                              .args[2],
-                             '_draws.csv')))
+                             '_rt-rep.csv')))
 
 print('>>>>> creating loglik outfile')
 
-saveRDS(m_loglik,
+saveRDS(d_loglik,
         here('stats',
              paste0('reaction-time_analysis_',
                     .args[2],
                     '_loglik.RData')))
+
+print('>>>>> generating summaries')
+d_summary <- m_samples$summary(rhat = posterior::rhat,
+                               ess_bulk = posterior::ess_bulk,
+                               ess_tail = posterior::ess_tail,
+                               .cores = 12)
 
 print('>>>>> creating summary outfile')
 
