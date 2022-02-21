@@ -33,7 +33,7 @@ m_samples <- m_rt$sample(data = list('N_OBS' = nrow(d),
                                                            .args[2]))),
                          chains = 24,
                          parallel_chains = 24,
-                         iter_warmup = 1e3,
+                         iter_warmup = 1.5e3,
                          iter_sampling = 1.25e3)
 
 print('>>>>> done sampling. extracting draws')
