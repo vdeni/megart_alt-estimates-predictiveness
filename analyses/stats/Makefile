@@ -31,13 +31,13 @@ reaction-time_prior-pc_create:\
 	reaction-time_prior-pc_data.csv
 
 reaction-time_analyse:\
-	reaction-time_analysis_median_draws.csv\
+	reaction-time_analysis_median_rt-rep.csv\
 	reaction-time_analysis_median_loglik.RData\
 	reaction-time_analysis_median_summary.csv\
-	reaction-time_analysis_mean_draws.csv\
+	reaction-time_analysis_mean_rt-rep.csv\
 	reaction-time_analysis_mean_loglik.RData\
 	reaction-time_analysis_mean_summary.csv\
-	reaction-time_analysis_latent-mean_draws.csv\
+	reaction-time_analysis_latent-mean_rt-rep.csv\
 	reaction-time_analysis_latent-mean_loglik.RData\
 	reaction-time_analysis_latent-mean_summary.csv
 
