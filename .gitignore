@@ -53,6 +53,7 @@ analyses/stats/reaction-time_*RData
 analyses/stats/*tmp*/
 
 analyses/stats/model-out-data_*
+analyses/stats/reaction-time_model.hpp
 
 analyses/wrangling/*colnames_rt-rep.txt
 
